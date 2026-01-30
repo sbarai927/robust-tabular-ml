@@ -1,0 +1,8 @@
+{
+  "Accuracy": 0.5382293762575453,
+  "F1": 0.48520944402132526,
+  "train_time_sec": 0.8249940872192383,
+  "model_size_mb": 1.6897916793823242,
+  "scenario": "high_cardinality",
+  "model": "tabnet"
+}

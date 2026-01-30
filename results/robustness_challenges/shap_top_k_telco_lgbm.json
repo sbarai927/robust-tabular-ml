@@ -1,0 +1,26 @@
+{
+  "missingness": [
+    "tenure",
+    "Contract",
+    "DeviceProtection",
+    "TotalCharges",
+    "MonthlyCharges",
+    "MultipleLines",
+    "TechSupport",
+    "PaymentMethod",
+    "OnlineSecurity",
+    "Dependents"
+  ],
+  "high_cardinality": [
+    "tenure",
+    "Contract",
+    "MonthlyCharges",
+    "TotalCharges",
+    "high_card_1",
+    "DeviceProtection",
+    "PaymentMethod",
+    "TechSupport",
+    "Dependents",
+    "OnlineSecurity"
+  ]
+}

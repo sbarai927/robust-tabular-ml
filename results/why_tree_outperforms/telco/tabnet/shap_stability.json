@@ -1,0 +1,29 @@
+{
+  "spearman": 0.9888740500349656,
+  "top_k": 10,
+  "jaccard": 0.3333333333333333,
+  "clean_top": [
+    "Contract_Month-to-month",
+    "Dependents_No",
+    "InternetService_DSL",
+    "InternetService_Fiber optic",
+    "MultipleLines_No",
+    "PaperlessBilling_Yes",
+    "Partner_No",
+    "PaymentMethod_Credit card (automatic)",
+    "PaymentMethod_Electronic check",
+    "tenure"
+  ],
+  "shift_top": [
+    "DeviceProtection_Yes",
+    "InternetService_DSL",
+    "InternetService_Fiber optic",
+    "MonthlyCharges",
+    "MultipleLines_No",
+    "PaymentMethod_Credit card (automatic)",
+    "PhoneService_No",
+    "SeniorCitizen",
+    "StreamingMovies_No",
+    "tenure"
+  ]
+}

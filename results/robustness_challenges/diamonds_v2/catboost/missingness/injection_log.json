@@ -1,0 +1,10 @@
+{
+  "missingness_rate": 0.15,
+  "missingness_columns": [
+    "depth_percent",
+    "fancy_color_intensity",
+    "color",
+    "culet_size",
+    "fluor_intensity"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "batch_size": 512,
+  "virtual_batch_size": 128,
+  "n_d": 64,
+  "n_a": 32,
+  "n_steps": 3,
+  "gamma": 1.5831780042523658,
+  "lambda_sparse": 1.6398364006746912e-05,
+  "momentum": 0.2893874677898749,
+  "learning_rate": 0.02726225574183127
+}

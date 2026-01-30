@@ -1,0 +1,8 @@
+{
+  "Accuracy": 0.9694444444444444,
+  "F1": 0.9688657125276597,
+  "train_time_sec": 0.1691739559173584,
+  "model_size_mb": 6.685585975646973,
+  "scenario": "high_cardinality",
+  "model": "rf"
+}

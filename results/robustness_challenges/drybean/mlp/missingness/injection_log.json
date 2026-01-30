@@ -1,0 +1,7 @@
+{
+  "missingness_rate": 0.15,
+  "missingness_columns": [
+    "V22",
+    "V15"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "Accuracy": 0.7981520966595593,
+  "F1": 0.5798816568047337,
+  "train_time_sec": 0.4756941795349121,
+  "model_size_mb": 0.5726547241210938,
+  "scenario": "high_cardinality",
+  "model": "catboost"
+}

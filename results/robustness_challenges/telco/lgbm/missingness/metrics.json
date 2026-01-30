@@ -1,0 +1,8 @@
+{
+  "Accuracy": 0.7704335465529495,
+  "F1": 0.524300441826215,
+  "train_time_sec": 0.34860706329345703,
+  "model_size_mb": 0.5815925598144531,
+  "scenario": "missingness",
+  "model": "lgbm"
+}

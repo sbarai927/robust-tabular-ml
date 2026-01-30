@@ -1,0 +1,8 @@
+{
+  "Accuracy": 0.3194444444444444,
+  "F1": 0.3002695333108981,
+  "train_time_sec": 1.505061149597168,
+  "model_size_mb": 4.320132255554199,
+  "scenario": "clean",
+  "model": "tabnet"
+}

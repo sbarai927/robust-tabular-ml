@@ -1,0 +1,11 @@
+{
+  "high_cardinality_base_columns": [
+    "pixel_2_7",
+    "pixel_0_2"
+  ],
+  "high_cardinality_new_columns": [
+    "high_card_0",
+    "high_card_1"
+  ],
+  "high_cardinality_unique_values": 150
+}

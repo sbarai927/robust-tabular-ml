@@ -1,0 +1,8 @@
+{
+  "Accuracy_clean": 0.7341862117981521,
+  "F1_clean": 0.0,
+  "Accuracy_shift": 0.7341862117981521,
+  "F1_shift": 0.0,
+  "delta_f1": 0.0,
+  "relative_drop_f1": 0.0
+}

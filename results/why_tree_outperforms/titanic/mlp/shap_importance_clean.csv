@@ -1,0 +1,376 @@
+feature,importance
+PassengerId,0.0030921447419603783
+Pclass,0.003639421692716415
+Age,0.007718051916141324
+SibSp,0.0035105782550602506
+Parch,0.009104506307897492
+Fare,0.0080290253427655
+"Name_Allen, Miss. Elisabeth Walton",0.0
+"Name_Allison, Master. Hudson Trevor",0.0
+"Name_Allison, Miss. Helen Loraine",0.0
+"Name_Anderson, Mr. Harry",0.0
+"Name_Andrews, Miss. Kornelia Theodosia",0.0
+"Name_Andrews, Mr. Thomas Jr",0.0
+"Name_Appleton, Mrs. Edward Dale (Charlotte Lamson)",0.0
+"Name_Astor, Mrs. John Jacob (Madeleine Talmadge Force)",0.0
+"Name_Aubart, Mme. Leontine Pauline",0.0
+"Name_Ball, Mrs. (Ada E Hall)",0.0
+"Name_Barkworth, Mr. Algernon Henry Wilson",0.0
+"Name_Baxter, Mr. Quigg Edmond",0.0
+"Name_Baxter, Mrs. James (Helene DeLaudeniere Chaput)",0.0
+"Name_Bazzani, Miss. Albina",0.0
+"Name_Becker, Master. Richard F",0.0
+"Name_Becker, Miss. Marion Louise",0.0
+"Name_Beckwith, Mr. Richard Leonard",0.0
+"Name_Beckwith, Mrs. Richard Leonard (Sallie Monypeny)",0.0
+"Name_Beesley, Mr. Lawrence",0.0
+"Name_Behr, Mr. Karl Howell",0.0
+"Name_Bishop, Mr. Dickinson H",0.0
+"Name_Bishop, Mrs. Dickinson H (Helen Walton)",0.0
+"Name_Bissette, Miss. Amelia",0.0
+"Name_Bjornstrom-Steffansson, Mr. Mauritz Hakan",0.0
+"Name_Blackwell, Mr. Stephen Weart",0.0
+"Name_Brown, Miss. Amelia ""Mildred""",0.0
+"Name_Brown, Mrs. James Joseph (Margaret Tobin)",0.0
+"Name_Burns, Miss. Elizabeth Margaret",0.0
+"Name_Butt, Major. Archibald Willingham",0.0
+"Name_Calderhead, Mr. Edward Pennington",0.0
+"Name_Carter, Master. William Thornton II",0.0
+"Name_Carter, Mr. William Ernest",0.0
+"Name_Carter, Mrs. William Ernest (Lucile Polk)",0.0
+"Name_Chaffee, Mr. Herbert Fuller",0.0
+"Name_Chambers, Mr. Norman Campbell",0.0
+"Name_Cherry, Miss. Gladys",0.0
+"Name_Colley, Mr. Edward Pomeroy",0.0
+"Name_Compton, Miss. Sara Rebecca",0.0
+"Name_Crosby, Capt. Edward Gifford",0.0
+"Name_Crosby, Miss. Harriet R",0.0
+"Name_Cumings, Mrs. John Bradley (Florence Briggs Thayer)",0.0
+"Name_Daly, Mr. Peter Denis ",0.0
+"Name_Davidson, Mr. Thornton",0.0
+"Name_Dodge, Master. Washington",0.0
+"Name_Duff Gordon, Sir. Cosmo Edmund (""Mr Morgan"")",0.0
+"Name_Endres, Miss. Caroline Louise",0.0
+"Name_Foreman, Mr. Benjamin Laventall",0.0
+"Name_Fortune, Miss. Alice Elizabeth",0.0
+"Name_Fortune, Miss. Mabel Helen",0.0
+"Name_Fortune, Mr. Charles Alexander",0.0
+"Name_Fortune, Mr. Mark",0.0
+"Name_Francatelli, Miss. Laura Mabel",0.0
+"Name_Frolicher, Miss. Hedwig Margaritha",0.0
+"Name_Futrelle, Mr. Jacques Heath",0.0
+"Name_Gee, Mr. Arthur H",0.0
+"Name_Giglio, Mr. Victor",0.0
+"Name_Goldenberg, Mr. Samuel L",0.0
+"Name_Goldschmidt, Mr. George B",0.0
+"Name_Graham, Mr. George Edward",0.0
+"Name_Graham, Mrs. William Thompson (Edith Junkins)",0.0
+"Name_Greenfield, Mr. William Bertram",0.0
+"Name_Guggenheim, Mr. Benjamin",0.0
+"Name_Harper, Mr. Henry Sleeper",0.0
+"Name_Harper, Mrs. Henry Sleeper (Myna Haxtun)",0.0
+"Name_Harris, Mr. Henry Birkhardt",0.0
+"Name_Harris, Mrs. Henry Birkhardt (Irene Wallach)",0.0
+"Name_Hassab, Mr. Hammad",0.0
+"Name_Hays, Miss. Margaret Bechstein",0.0
+"Name_Hays, Mrs. Charles Melville (Clara Jennings Gregg)",0.0
+"Name_Hippach, Miss. Jean Gertrude",0.0
+"Name_Hippach, Mrs. Louis Albert (Ida Sophia Fischer)",0.0
+"Name_Hogeboom, Mrs. John C (Anna Andrews)",0.0
+"Name_Hoyt, Mr. Frederick Maxfield",0.0
+"Name_Hoyt, Mrs. Frederick Maxfield (Jane Anne Forby)",0.0
+"Name_Isham, Miss. Ann Elizabeth",0.0
+"Name_Jerwan, Mrs. Amin S (Marie Marthe Thuillard)",0.0
+"Name_Kent, Mr. Edward Austin",0.0
+"Name_Kimball, Mr. Edwin Nelson Jr",0.0
+"Name_Leader, Dr. Alice (Farnham)",0.0
+"Name_Lemore, Mrs. (Amelia Milley)",0.0
+"Name_Lesurer, Mr. Gustave J",0.0
+"Name_Levy, Mr. Rene Jacques",0.0
+"Name_Lines, Miss. Mary Conover",0.0
+"Name_Long, Mr. Milton Clyde",0.0
+"Name_Longley, Miss. Gretchen Fiske",0.0
+"Name_Lurette, Miss. Elise",0.0
+"Name_Mack, Mrs. (Mary)",0.0
+"Name_Madill, Miss. Georgette Alexandra",0.0
+"Name_Marvin, Mr. Daniel Warner",0.0
+"Name_Mayne, Mlle. Berthe Antonine (""Mrs de Villiers"")",0.0
+"Name_McCarthy, Mr. Timothy J",0.0
+"Name_McGough, Mr. James Robert",0.0
+"Name_Millet, Mr. Francis Davis",0.0
+"Name_Minahan, Miss. Daisy E",0.0
+"Name_Moen, Mr. Sigurd Hansen",0.0
+"Name_Molson, Mr. Harry Markland",0.0
+"Name_Moor, Master. Meier",0.0
+"Name_Moor, Mrs. (Beila)",0.0
+"Name_Natsch, Mr. Charles H",0.0
+"Name_Navratil, Master. Edmond Roger",0.0
+"Name_Navratil, Master. Michel M",0.0
+"Name_Navratil, Mr. Michel (""Louis M Hoffman"")",0.0
+"Name_Newell, Miss. Madeleine",0.0
+"Name_Newell, Miss. Marjorie",0.0
+"Name_Newell, Mr. Arthur Webster",0.0
+"Name_Newsom, Miss. Helen Monypeny",0.0
+"Name_Ostby, Mr. Engelhart Cornelius",0.0
+"Name_Partner, Mr. Austen",0.0
+"Name_Pears, Mrs. Thomas (Edith Wearne)",0.0
+"Name_Penasco y Castellana, Mr. Victor de Satode",0.0
+"Name_Penasco y Castellana, Mrs. Victor de Satode (Maria Josefa Perez de Soto y Vallejo)",0.0
+"Name_Perreault, Miss. Anne",0.0
+"Name_Peuchen, Major. Arthur Godfrey",0.0
+"Name_Pickard, Mr. Berk (Berk Trembisky)",0.0
+"Name_Porter, Mr. Walter Chamberlain",0.0
+"Name_Potter, Mrs. Thomas Jr (Lily Alexenia Wilson)",0.0
+"Name_Robert, Mrs. Edward Scott (Elisabeth Walton McMillan)",0.0
+"Name_Roebling, Mr. Washington Augustus II",0.0
+"Name_Ross, Mr. John Hugo",0.0
+"Name_Sagesser, Mlle. Emma",0.0
+"Name_Sandstrom, Miss. Marguerite Rut",0.0
+"Name_Silverthorne, Mr. Spencer Victor",0.0
+"Name_Silvey, Mr. William Baird",0.0
+"Name_Silvey, Mrs. William Baird (Alice Munger)",0.0
+"Name_Simonius-Blumer, Col. Oberst Alfons",0.0
+"Name_Smith, Mr. James Clinch",0.0
+"Name_Soholt, Mr. Peter Andreas Lauritz Andersen",0.0
+"Name_Stahelin-Maeglin, Dr. Max",0.0
+"Name_Stephenson, Mrs. Walter Bertram (Martha Eustis)",0.0
+"Name_Strom, Miss. Telma Matilda",0.0
+"Name_Strom, Mrs. Wilhelm (Elna Matilda Persson)",0.0
+"Name_Sutton, Mr. Frederick",0.0
+"Name_Swift, Mrs. Frederick Joel (Margaret Welles Barron)",0.0
+"Name_Taussig, Miss. Ruth",0.0
+"Name_Taussig, Mr. Emil",0.0
+"Name_Taussig, Mrs. Emil (Tillie Mandelbaum)",0.0
+"Name_Taylor, Mr. Elmer Zebley",0.0
+"Name_Thayer, Mr. John Borland",0.0
+"Name_Thayer, Mr. John Borland Jr",0.0
+"Name_Thayer, Mrs. John Borland (Marian Longstreth Morris)",0.0
+"Name_Troutt, Miss. Edwina Celia ""Winnie""",0.0
+"Name_Walker, Mr. William Anderson",0.0
+"Name_Warren, Mrs. Frank Manley (Anna Sophia Atkinson)",0.0
+"Name_Webber, Miss. Susan",0.0
+"Name_Widener, Mr. Harry Elkins",0.0
+"Name_Young, Miss. Marie Grice",0.0
+Sex_female,0.010332694418739264
+Sex_male,0.0022828959456041337
+Ticket_110152,0.0014650061264699264
+Ticket_110413,0.0
+Ticket_110465,0.0
+Ticket_110564,0.0
+Ticket_110813,0.0
+Ticket_111320,0.0
+Ticket_111361,0.0
+Ticket_111369,0.0
+Ticket_112050,0.0
+Ticket_113043,0.0
+Ticket_113050,0.0
+Ticket_113051,0.0
+Ticket_113055,0.0
+Ticket_113501,0.0
+Ticket_113503,0.0
+Ticket_113509,0.0
+Ticket_113760,0.0008321466445279991
+Ticket_113773,0.0
+Ticket_113776,0.0011266568118384224
+Ticket_113781,0.0004951105655377389
+Ticket_113784,0.0
+Ticket_113786,0.0
+Ticket_113787,0.0
+Ticket_113803,0.0003216271188399364
+Ticket_113806,0.001055436065575764
+Ticket_11751,0.0
+Ticket_11752,0.0
+Ticket_11753,0.0
+Ticket_11767,0.0
+Ticket_11769,0.0
+Ticket_11771,0.0
+Ticket_11813,0.0
+Ticket_11967,0.0
+Ticket_12749,0.0
+Ticket_13049,0.0
+Ticket_13213,0.0
+Ticket_13214,0.0
+Ticket_13502,0.0
+Ticket_13507,0.0
+Ticket_13509,0.0
+Ticket_13568,0.0
+Ticket_16966,0.00032145070181709585
+Ticket_17421,0.0
+Ticket_17453,0.0
+Ticket_17463,0.0
+Ticket_17465,0.0
+Ticket_17466,0.0
+Ticket_17764,0.0
+Ticket_19928,0.0007529826968327685
+Ticket_19943,0.0
+Ticket_19950,0.0
+Ticket_19952,0.0
+Ticket_19996,0.0
+Ticket_230080,0.0
+Ticket_230136,0.0
+Ticket_24160,0.0
+Ticket_248698,0.0
+Ticket_248733,0.0
+Ticket_27042,0.0
+Ticket_27267,0.0
+Ticket_28551,0.0
+Ticket_33638,0.0
+Ticket_34218,0.0
+Ticket_347054,0.0
+Ticket_348123,0.0
+Ticket_348124,0.0
+Ticket_35273,0.0
+Ticket_36947,0.0011103375061226072
+Ticket_36963,0.0
+Ticket_36967,0.0
+Ticket_36973,0.0
+Ticket_392096,0.0
+Ticket_5727,0.0
+Ticket_C.A. 34260,0.0
+Ticket_F.C. 12750,0.0
+Ticket_PC 17473,0.0
+Ticket_PC 17475,0.0
+Ticket_PC 17476,0.0
+Ticket_PC 17477,0.0
+Ticket_PC 17482,0.0
+Ticket_PC 17485,0.0
+Ticket_PC 17558,0.0
+Ticket_PC 17569,0.0
+Ticket_PC 17572,0.0
+Ticket_PC 17582,0.0007867160053632031
+Ticket_PC 17590,0.0
+Ticket_PC 17592,0.0
+Ticket_PC 17593,0.0
+Ticket_PC 17595,0.0
+Ticket_PC 17596,0.0
+Ticket_PC 17599,0.0
+Ticket_PC 17610,0.0
+Ticket_PC 17754,0.0
+Ticket_PC 17755,0.0009051329672322154
+Ticket_PC 17756,0.0
+Ticket_PC 17757,0.0
+Ticket_PC 17758,0.0
+Ticket_PC 17759,0.0
+Ticket_PC 17760,0.0
+Ticket_PP 9549,0.0006063911270475169
+Ticket_S.O./P.P. 3,0.0
+Ticket_SC/AH Basle 541,0.0
+Ticket_SC/Paris 2163,0.0
+Ticket_SOTON/O.Q. 392078,0.0
+Ticket_W.E.P. 5734,0.0
+Ticket_WE/P 5735,0.0
+Cabin_A10,0.0
+Cabin_A20,0.0
+Cabin_A23,0.0
+Cabin_A24,0.0
+Cabin_A26,0.0
+Cabin_A34,0.0
+Cabin_A36,0.0
+Cabin_A5,0.0
+Cabin_A7,0.0
+Cabin_B101,0.0
+Cabin_B18,0.0
+Cabin_B22,0.0
+Cabin_B3,0.0
+Cabin_B30,0.0
+Cabin_B35,0.0
+Cabin_B37,0.0
+Cabin_B38,0.0
+Cabin_B39,0.0
+Cabin_B4,0.0
+Cabin_B49,0.0
+Cabin_B5,0.0
+Cabin_B50,0.0
+Cabin_B58 B60,0.0
+Cabin_B69,0.0
+Cabin_B71,0.0
+Cabin_B73,0.0
+Cabin_B77,0.0019713699269429115
+Cabin_B80,0.0
+Cabin_B82 B84,0.0
+Cabin_B86,0.0
+Cabin_B96 B98,0.0005934745890286947
+Cabin_C101,0.0
+Cabin_C104,0.0
+Cabin_C110,0.0
+Cabin_C111,0.0
+Cabin_C118,0.0
+Cabin_C123,0.0002542156487462995
+Cabin_C124,0.0
+Cabin_C125,0.0013054427994971388
+Cabin_C126,0.0
+Cabin_C148,0.0
+Cabin_C2,0.0014898983598599833
+Cabin_C22 C26,0.0007468115693648514
+Cabin_C23 C25 C27,0.0
+Cabin_C30,0.0
+Cabin_C32,0.0
+Cabin_C45,0.0
+Cabin_C49,0.0
+Cabin_C50,0.0
+Cabin_C52,0.0
+Cabin_C54,0.0
+Cabin_C62 C64,0.0
+Cabin_C65,0.0
+Cabin_C68,0.0
+Cabin_C70,0.0
+Cabin_C78,0.00043140492308988803
+Cabin_C82,0.0
+Cabin_C83,0.0
+Cabin_C85,0.0
+Cabin_C90,0.0
+Cabin_C91,0.0
+Cabin_C92,0.0
+Cabin_C93,0.0
+Cabin_C99,0.0
+Cabin_D,0.0
+Cabin_D10 D12,0.0
+Cabin_D11,0.0
+Cabin_D15,0.0
+Cabin_D17,0.0
+Cabin_D19,0.0
+Cabin_D20,0.0007953606478065355
+Cabin_D28,0.0
+Cabin_D30,0.0
+Cabin_D33,0.0
+Cabin_D35,0.0
+Cabin_D36,0.0
+Cabin_D37,0.0
+Cabin_D46,0.0
+Cabin_D47,0.0
+Cabin_D48,0.0
+Cabin_D49,0.0
+Cabin_D50,0.0
+Cabin_D56,0.0
+Cabin_D6,0.0
+Cabin_D7,0.0
+Cabin_D9,0.0
+Cabin_E10,0.0
+Cabin_E101,0.0
+Cabin_E12,0.0
+Cabin_E121,0.0
+Cabin_E17,0.0
+Cabin_E24,0.0
+Cabin_E25,0.00043375292010635144
+Cabin_E31,0.0
+Cabin_E36,0.0
+Cabin_E38,0.0
+Cabin_E40,0.0
+Cabin_E44,0.0
+Cabin_E46,0.0
+Cabin_E49,0.0
+Cabin_E58,0.0
+Cabin_E63,0.0
+Cabin_E67,0.0
+Cabin_E68,0.0
+Cabin_E77,0.0
+Cabin_E8,0.001459704816171945
+Cabin_F G73,0.0
+Cabin_F2,0.0
+Cabin_F33,0.00041422661679836717
+Cabin_F4,0.0
+Cabin_G6,0.0004884437174553515
+Cabin_T,0.0
+Embarked_C,0.009597260826625625
+Embarked_Q,0.0010340118811060402
+Embarked_S,0.0012894829010335587

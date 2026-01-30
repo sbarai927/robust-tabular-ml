@@ -1,0 +1,29 @@
+{
+  "spearman": 0.8876847969641005,
+  "top_k": 10,
+  "jaccard": 0.42857142857142855,
+  "clean_top": [
+    "Age",
+    "Cabin_B77",
+    "Embarked_C",
+    "Fare",
+    "Parch",
+    "PassengerId",
+    "Pclass",
+    "Sex_female",
+    "Sex_male",
+    "SibSp"
+  ],
+  "shift_top": [
+    "Age",
+    "Cabin_D20",
+    "Cabin_F33",
+    "Fare",
+    "PassengerId",
+    "Pclass",
+    "Sex_female",
+    "SibSp",
+    "Ticket_113806",
+    "Ticket_19950"
+  ]
+}

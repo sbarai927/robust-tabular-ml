@@ -1,0 +1,8 @@
+{
+  "Accuracy": 0.9666666666666667,
+  "F1": 0.9665211872269788,
+  "train_time_sec": 0.10924386978149414,
+  "model_size_mb": 0.3138751983642578,
+  "scenario": "missingness",
+  "model": "mlp"
+}

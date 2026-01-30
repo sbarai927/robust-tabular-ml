@@ -1,0 +1,26 @@
+{
+  "missingness": [
+    "Unnamed: 0",
+    "meas_depth",
+    "meas_width",
+    "carat_weight",
+    "depth_percent",
+    "table_percent",
+    "meas_length",
+    "cut",
+    "color",
+    "clarity"
+  ],
+  "high_cardinality": [
+    "Unnamed: 0",
+    "meas_depth",
+    "meas_width",
+    "carat_weight",
+    "depth_percent",
+    "table_percent",
+    "meas_length",
+    "cut",
+    "color",
+    "clarity"
+  ]
+}

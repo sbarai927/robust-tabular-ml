@@ -1,0 +1,8 @@
+{
+  "Accuracy": 0.9666666666666667,
+  "F1": 0.9661946398688437,
+  "train_time_sec": 0.17215180397033691,
+  "model_size_mb": 6.868233680725098,
+  "scenario": "missingness",
+  "model": "rf"
+}

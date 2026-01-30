@@ -1,0 +1,10 @@
+{
+  "missingness_rate": 0.15,
+  "missingness_columns": [
+    "clarity",
+    "fluor_color",
+    "meas_length",
+    "fancy_color_secondary_color",
+    "culet_condition"
+  ]
+}

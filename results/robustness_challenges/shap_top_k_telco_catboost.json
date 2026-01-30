@@ -1,0 +1,38 @@
+{
+  "clean": [
+    "Contract",
+    "tenure",
+    "InternetService",
+    "OnlineSecurity",
+    "TechSupport",
+    "MonthlyCharges",
+    "TotalCharges",
+    "PaymentMethod",
+    "MultipleLines",
+    "StreamingTV"
+  ],
+  "missingness": [
+    "Contract",
+    "MonthlyCharges",
+    "tenure",
+    "OnlineSecurity",
+    "TechSupport",
+    "TotalCharges",
+    "PaymentMethod",
+    "InternetService",
+    "OnlineBackup",
+    "StreamingMovies"
+  ],
+  "high_cardinality": [
+    "Contract",
+    "tenure",
+    "InternetService",
+    "MonthlyCharges",
+    "OnlineSecurity",
+    "TechSupport",
+    "TotalCharges",
+    "MultipleLines",
+    "StreamingMovies",
+    "PaymentMethod"
+  ]
+}

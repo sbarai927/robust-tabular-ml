@@ -1,0 +1,37 @@
+{
+  "os": "macOS-26.2-arm64-arm-64bit",
+  "python": "CPython 3.11.14",
+  "startedAt": "2025-12-23T11:36:48.594246Z",
+  "program": "/Users/suvendu/robust-tabular-ml/src/model_train/robustness/visualize_perf_degradation_wandb.py",
+  "codePath": "src/model_train/robustness/visualize_perf_degradation_wandb.py",
+  "codePathLocal": "src/model_train/robustness/visualize_perf_degradation_wandb.py",
+  "git": {
+    "remote": "https://github.com/sbarai927/robust-tabular-ml.git",
+    "commit": "aeca35f32e411d507ddbc9c3240d56459ae50863"
+  },
+  "email": "suvendu.barai@smail.th-koeln.de",
+  "root": "/Users/suvendu/robust-tabular-ml",
+  "host": "Suvendus-MacBook-Pro.local",
+  "executable": "/Users/suvendu/robust-tabular-ml/.venv-py311/bin/python",
+  "cpu_count": 8,
+  "cpu_count_logical": 8,
+  "disk": {
+    "/": {
+      "total": "245107195904",
+      "used": "225027604480"
+    }
+  },
+  "memory": {
+    "total": "8589934592"
+  },
+  "apple": {
+    "name": "Apple M2",
+    "ecpuCores": 4,
+    "pcpuCores": 4,
+    "gpuCores": 10,
+    "memoryGb": 8,
+    "swapTotalBytes": "11811160064",
+    "ramTotalBytes": "8589934592"
+  },
+  "writerId": "xyyvb8eiobs5gjmkqm48qj0macwp7txd"
+}

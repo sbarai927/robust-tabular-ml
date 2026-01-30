@@ -1,0 +1,9 @@
+{
+  "missingness_rate": 0.15,
+  "missingness_columns": [
+    "OnlineSecurity",
+    "Contract",
+    "MultipleLines",
+    "MonthlyCharges"
+  ]
+}

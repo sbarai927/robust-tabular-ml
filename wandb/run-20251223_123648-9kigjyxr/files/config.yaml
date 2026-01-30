@@ -1,0 +1,45 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            xyyvb8eiobs5gjmkqm48qj0macwp7txd:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 10
+                    memoryGb: 8
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "8589934592"
+                    swapTotalBytes: "11811160064"
+                codePath: src/model_train/robustness/visualize_perf_degradation_wandb.py
+                codePathLocal: src/model_train/robustness/visualize_perf_degradation_wandb.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "225027604480"
+                email: suvendu.barai@smail.th-koeln.de
+                executable: /Users/suvendu/robust-tabular-ml/.venv-py311/bin/python
+                git:
+                    commit: aeca35f32e411d507ddbc9c3240d56459ae50863
+                    remote: https://github.com/sbarai927/robust-tabular-ml.git
+                host: Suvendus-MacBook-Pro.local
+                memory:
+                    total: "8589934592"
+                os: macOS-26.2-arm64-arm-64bit
+                program: /Users/suvendu/robust-tabular-ml/src/model_train/robustness/visualize_perf_degradation_wandb.py
+                python: CPython 3.11.14
+                root: /Users/suvendu/robust-tabular-ml
+                startedAt: "2025-12-23T11:36:48.594246Z"
+                writerId: xyyvb8eiobs5gjmkqm48qj0macwp7txd
+        m: []
+        python_version: 3.11.14
+        t:
+            "3":
+                - 2
+                - 13
+            "4": 3.11.14
+            "5": 0.23.1
+            "12": 0.23.1
+            "13": darwin-arm64

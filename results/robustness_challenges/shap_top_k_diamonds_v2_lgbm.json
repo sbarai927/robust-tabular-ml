@@ -1,0 +1,38 @@
+{
+  "clean": [
+    "Unnamed: 0",
+    "carat_weight",
+    "color",
+    "clarity",
+    "table_percent",
+    "meas_width",
+    "meas_depth",
+    "depth_percent",
+    "symmetry",
+    "meas_length"
+  ],
+  "missingness": [
+    "Unnamed: 0",
+    "carat_weight",
+    "color",
+    "clarity",
+    "depth_percent",
+    "meas_depth",
+    "meas_width",
+    "table_percent",
+    "symmetry",
+    "fluor_intensity"
+  ],
+  "high_cardinality": [
+    "Unnamed: 0",
+    "carat_weight",
+    "color",
+    "clarity",
+    "meas_depth",
+    "meas_length",
+    "depth_percent",
+    "high_card_1",
+    "table_percent",
+    "cut_quality"
+  ]
+}
