@@ -210,5 +210,5 @@ __marimo__/
 *.pkl
 *.npy
 *.db
-results/embeddings/
-results/embeddings_extended_analysis/
+# results/embeddings/
+# results/embeddings_extended_analysis/
