@@ -87,6 +87,13 @@ DATASET_FILTER = set(os.getenv("HPO_DATASETS", "").split(",")) if os.getenv("HPO
 MODEL_FILTER = set(os.getenv("HPO_MODELS", "").split(",")) if os.getenv("HPO_MODELS") else None
 OVERWRITE = os.getenv("HPO_OVERWRITE", "false").lower() == "true"
 
+# FTTransformer tuning guards for memory-constrained environments.
+FTT_MAX_DMODEL = int(os.getenv("FTT_MAX_DMODEL", "256"))
+FTT_MAX_LAYERS = int(os.getenv("FTT_MAX_LAYERS", "6"))
+FTT_BATCH_CHOICES = [
+    int(x) for x in os.getenv("FTT_BATCH_CHOICES", "256,512,1024").split(",") if x.strip()
+]
+
 # Ensure Matplotlib has a writable cache to avoid warnings and slowdowns
 os.environ.setdefault("MPLBACKEND", "Agg")
 mpl_dir = Path("results/.matplotlib").absolute()
@@ -411,18 +418,22 @@ def objective_factory(
                 ),
             }
         if model_name in {"fttransformer", "saint"}:
-            d_model = trial.suggest_int("d_model", 64, 256, step=32)
+            d_model_high = min(FTT_MAX_DMODEL, 256)
+            d_model_low = min(64, d_model_high)
+            d_model = trial.suggest_int("d_model", d_model_low, d_model_high, step=32)
             n_heads = trial.suggest_int("n_heads", 2, 8)
             if d_model % n_heads != 0:
                 d_model = (d_model // n_heads) * n_heads
             return {
                 "d_model": d_model,
                 "n_heads": n_heads,
-                "n_layers": trial.suggest_int("n_layers", 2, 6),
+                "n_layers": trial.suggest_int("n_layers", 2, min(FTT_MAX_LAYERS, 6)),
                 "dropout": trial.suggest_float("dropout", 0.05, 0.4),
                 "lr": trial.suggest_float("lr", 1e-4, 5e-3, log=True),
                 "weight_decay": trial.suggest_float("weight_decay", 1e-6, 1e-3, log=True),
-                "batch_size": trial.suggest_categorical("batch_size", [256, 512, 1024]),
+                "batch_size": trial.suggest_categorical(
+                    "batch_size", FTT_BATCH_CHOICES or [256, 512, 1024]
+                ),
                 "max_epochs": trial.suggest_int("max_epochs", 20, 60),
                 "patience": trial.suggest_int("patience", 5, 12),
             }
@@ -779,7 +790,7 @@ def main():
         DatasetConfig("diamonds_v3", Path("data/diamonds_v3.csv"), "total_sales_price", "regression"),
         DatasetConfig("mnist", Path("data/mnist_tabular_digits.csv"), "label", "classification", True),
     ]
-    models = ["rf", "lgbm", "catboost", "xgboost", "mlp", "tabnet"]
+    models = ["rf", "lgbm", "catboost", "xgboost", "mlp", "tabnet", "fttransformer"]
     results_root = Path("results/hpo")
     for cfg in datasets:
         if dataset_filter and cfg.name not in dataset_filter:
