@@ -210,3 +210,5 @@ __marimo__/
 *.pkl
 *.npy
 *.db
+*.db
+catboost_info/
