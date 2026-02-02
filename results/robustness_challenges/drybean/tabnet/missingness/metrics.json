@@ -1,8 +1,21 @@
 {
-  "Accuracy": 0.4959758551307847,
-  "F1": 0.3908084363038508,
-  "train_time_sec": 0.7731640338897705,
-  "model_size_mb": 1.6747159957885742,
+  "Accuracy": 0.5191146881287726,
+  "F1": 0.45790890836071557,
+  "train_time_sec": 0.5262181758880615,
+  "model_size_mb": 1.6743040084838867,
+  "timestamp": "2026-02-02 18:21:45",
+  "params": {
+    "batch_size": 256,
+    "virtual_batch_size": 256,
+    "n_d": 24,
+    "n_a": 40,
+    "n_steps": 3,
+    "gamma": 1.2921446485352182,
+    "lambda_sparse": 2.9204338471814107e-05,
+    "momentum": 0.18786729384464404,
+    "learning_rate": 0.02157696745589683
+  },
   "scenario": "missingness",
-  "model": "tabnet"
+  "model": "tabnet",
+  "dataset": "drybean"
 }

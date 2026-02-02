@@ -1,0 +1,26 @@
+{
+  "clean": [
+    "carat_weight",
+    "meas_length",
+    "cut_Round",
+    "color_E",
+    "Unnamed: 0",
+    "culet_size_N",
+    "clarity_VS1",
+    "color_D",
+    "color_I",
+    "table_percent"
+  ],
+  "missingness": [
+    "Unnamed: 0",
+    "carat_weight",
+    "meas_width",
+    "meas_length",
+    "lab_HRD",
+    "clarity_SI2",
+    "color_E",
+    "color_D",
+    "cut_Round",
+    "cut_quality_Excellent"
+  ]
+}

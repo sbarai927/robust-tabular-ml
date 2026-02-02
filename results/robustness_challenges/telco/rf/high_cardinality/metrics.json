@@ -1,8 +1,16 @@
 {
   "Accuracy": 0.775408670931059,
   "F1": 0.5269461077844312,
-  "train_time_sec": 0.26916027069091797,
+  "train_time_sec": 0.8725190162658691,
   "model_size_mb": 15.657814979553223,
+  "timestamp": "2026-02-02 18:23:18",
+  "params": {
+    "n_estimators": 225,
+    "max_depth": 18,
+    "min_samples_split": 8,
+    "min_samples_leaf": 3
+  },
   "scenario": "high_cardinality",
-  "model": "rf"
+  "model": "rf",
+  "dataset": "telco"
 }

@@ -1,0 +1,32 @@
+{
+  "clean_top_k": [
+    "carat_weight",
+    "meas_length",
+    "cut_Round",
+    "color_E",
+    "Unnamed: 0",
+    "culet_size_N",
+    "clarity_VS1",
+    "color_D",
+    "color_I",
+    "table_percent"
+  ],
+  "comparisons": {
+    "missingness": {
+      "top_k": [
+        "Unnamed: 0",
+        "carat_weight",
+        "meas_width",
+        "meas_length",
+        "lab_HRD",
+        "clarity_SI2",
+        "color_E",
+        "color_D",
+        "cut_Round",
+        "cut_quality_Excellent"
+      ],
+      "overlap_count": 6,
+      "jaccard": 0.42857142857142855
+    }
+  }
+}

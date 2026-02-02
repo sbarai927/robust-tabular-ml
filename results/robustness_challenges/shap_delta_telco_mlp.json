@@ -1,0 +1,32 @@
+{
+  "clean_top_k": [
+    "StreamingTV_No",
+    "DeviceProtection_No",
+    "StreamingTV_No internet service",
+    "TechSupport_No",
+    "Contract_Two year",
+    "MultipleLines_No phone service",
+    "OnlineSecurity_No",
+    "gender_Female",
+    "InternetService_DSL",
+    "StreamingMovies_Yes"
+  ],
+  "comparisons": {
+    "missingness": {
+      "top_k": [
+        "OnlineSecurity_No internet service",
+        "StreamingMovies_No",
+        "Contract_Two year",
+        "OnlineBackup_No internet service",
+        "OnlineBackup_Yes",
+        "DeviceProtection_Yes",
+        "Partner_No",
+        "InternetService_No",
+        "TechSupport_No",
+        "OnlineSecurity_No"
+      ],
+      "overlap_count": 3,
+      "jaccard": 0.17647058823529413
+    }
+  }
+}

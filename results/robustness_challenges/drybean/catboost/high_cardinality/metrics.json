@@ -1,8 +1,16 @@
 {
-  "Accuracy": 0.7776659959758552,
-  "F1": 0.7772870822371256,
-  "train_time_sec": 0.858400821685791,
-  "model_size_mb": 1.7191314697265625,
+  "Accuracy": 0.7746478873239436,
+  "F1": 0.77462507692806,
+  "train_time_sec": 0.8516120910644531,
+  "model_size_mb": 1.7199249267578125,
+  "timestamp": "2026-02-02 18:20:31",
+  "params": {
+    "iterations": 429,
+    "learning_rate": 0.04694595034255959,
+    "depth": 8,
+    "l2_leaf_reg": 0.0115542217801539
+  },
   "scenario": "high_cardinality",
-  "model": "catboost"
+  "model": "catboost",
+  "dataset": "drybean"
 }

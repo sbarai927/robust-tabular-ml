@@ -1,4 +1,12 @@
 {
-  "train_time_sec": 0.7137768268585205,
-  "model_size_mb": 1.2888240814208984
+  "train_time_sec": 0.8260352611541748,
+  "model_size_mb": 1.2888240814208984,
+  "timestamp": "2026-02-02 18:32:42",
+  "params": {
+    "iterations": 462,
+    "learning_rate": 0.08514235218074596,
+    "depth": 5,
+    "l2_leaf_reg": 1.5033819282269176
+  },
+  "scenario": "clean"
 }

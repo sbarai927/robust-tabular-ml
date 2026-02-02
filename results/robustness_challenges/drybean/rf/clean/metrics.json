@@ -1,8 +1,16 @@
 {
   "Accuracy": 0.7766599597585513,
   "F1": 0.7766020773856527,
-  "train_time_sec": 0.43210697174072266,
+  "train_time_sec": 0.9005997180938721,
   "model_size_mb": 23.748482704162598,
+  "timestamp": "2026-02-02 18:20:12",
+  "params": {
+    "n_estimators": 371,
+    "max_depth": 15,
+    "min_samples_split": 5,
+    "min_samples_leaf": 3
+  },
   "scenario": "clean",
-  "model": "rf"
+  "model": "rf",
+  "dataset": "drybean"
 }

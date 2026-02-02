@@ -1,8 +1,18 @@
 {
-  "Accuracy": 0.9722222222222222,
-  "F1": 0.9714405699097556,
-  "train_time_sec": 1.360908031463623,
-  "model_size_mb": 4.571168899536133,
+  "Accuracy": 0.9472222222222222,
+  "F1": 0.9460113472786184,
+  "train_time_sec": 0.546989917755127,
+  "model_size_mb": 4.070894241333008,
+  "timestamp": "2026-02-02 18:32:51",
+  "params": {
+    "alpha": 0.0039011663045602804,
+    "learning_rate_init": 0.0053176740028311725,
+    "hidden_layer_sizes": [
+      98,
+      65
+    ]
+  },
   "scenario": "high_cardinality",
-  "model": "mlp"
+  "model": "mlp",
+  "dataset": "mnist"
 }

@@ -1,8 +1,18 @@
 {
-  "Accuracy": 0.7839374555792467,
-  "F1": 0.5694050991501416,
-  "train_time_sec": 11.362414121627808,
-  "model_size_mb": 18.02251625061035,
+  "Accuracy": 0.7867803837953091,
+  "F1": 0.6221662468513854,
+  "train_time_sec": 7.8367228507995605,
+  "model_size_mb": 19.29680824279785,
+  "timestamp": "2026-02-02 18:31:55",
+  "params": {
+    "alpha": 0.00788671412999049,
+    "learning_rate_init": 0.004138040112561018,
+    "hidden_layer_sizes": [
+      124,
+      76
+    ]
+  },
   "scenario": "high_cardinality",
-  "model": "mlp"
+  "model": "mlp",
+  "dataset": "telco"
 }

@@ -1,26 +1,38 @@
 {
+  "clean": [
+    "Unnamed: 0",
+    "cut",
+    "girdle_max",
+    "culet_size",
+    "depth_percent",
+    "carat_weight",
+    "table_percent",
+    "symmetry",
+    "meas_width",
+    "meas_depth"
+  ],
   "missingness": [
     "Unnamed: 0",
-    "meas_depth",
-    "meas_width",
-    "carat_weight",
-    "depth_percent",
-    "table_percent",
-    "meas_length",
     "cut",
-    "color",
+    "meas_width",
+    "depth_percent",
+    "carat_weight",
+    "culet_size",
+    "table_percent",
+    "girdle_max",
+    "girdle_min",
     "clarity"
   ],
   "high_cardinality": [
     "Unnamed: 0",
-    "meas_depth",
-    "meas_width",
-    "carat_weight",
-    "depth_percent",
-    "table_percent",
-    "meas_length",
+    "high_card_0",
     "cut",
-    "color",
-    "clarity"
+    "girdle_max",
+    "symmetry",
+    "table_percent",
+    "depth_percent",
+    "carat_weight",
+    "meas_width",
+    "culet_size"
   ]
 }

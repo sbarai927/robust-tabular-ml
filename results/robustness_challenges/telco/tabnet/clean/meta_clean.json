@@ -1,4 +1,17 @@
 {
-  "train_time_sec": 2.391494035720825,
-  "model_size_mb": 1.7349576950073242
+  "train_time_sec": 2.11035418510437,
+  "model_size_mb": 1.7344083786010742,
+  "timestamp": "2026-02-02 18:32:00",
+  "params": {
+    "batch_size": 256,
+    "virtual_batch_size": 256,
+    "n_d": 24,
+    "n_a": 40,
+    "n_steps": 3,
+    "gamma": 1.2921446485352182,
+    "lambda_sparse": 2.9204338471814107e-05,
+    "momentum": 0.18786729384464404,
+    "learning_rate": 0.02157696745589683
+  },
+  "scenario": "clean"
 }

@@ -1,0 +1,48 @@
+{
+  "clean_top_k": [
+    "Unnamed: 0",
+    "cut",
+    "girdle_max",
+    "culet_size",
+    "depth_percent",
+    "carat_weight",
+    "table_percent",
+    "symmetry",
+    "meas_width",
+    "meas_depth"
+  ],
+  "comparisons": {
+    "missingness": {
+      "top_k": [
+        "Unnamed: 0",
+        "cut",
+        "meas_width",
+        "depth_percent",
+        "carat_weight",
+        "culet_size",
+        "table_percent",
+        "girdle_max",
+        "girdle_min",
+        "clarity"
+      ],
+      "overlap_count": 8,
+      "jaccard": 0.6666666666666666
+    },
+    "high_cardinality": {
+      "top_k": [
+        "Unnamed: 0",
+        "high_card_0",
+        "cut",
+        "girdle_max",
+        "symmetry",
+        "table_percent",
+        "depth_percent",
+        "carat_weight",
+        "meas_width",
+        "culet_size"
+      ],
+      "overlap_count": 9,
+      "jaccard": 0.8181818181818182
+    }
+  }
+}

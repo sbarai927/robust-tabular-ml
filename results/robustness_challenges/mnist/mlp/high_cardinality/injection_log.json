@@ -1,7 +1,7 @@
 {
   "high_cardinality_base_columns": [
-    "pixel_1_3",
-    "pixel_7_2"
+    "pixel_3_1",
+    "pixel_1_3"
   ],
   "high_cardinality_new_columns": [
     "high_card_0",

@@ -1,9 +1,17 @@
 {
-  "MAE": 42.11928680001578,
-  "RMSE": 847.2384305606421,
+  "MAE": 42.119286800015814,
+  "RMSE": 847.2384305606419,
   "R2": 0.9990759137742009,
-  "train_time_sec": 34.36996507644653,
+  "train_time_sec": 153.96223902702332,
   "model_size_mb": 18.224854469299316,
+  "timestamp": "2026-02-02 18:07:13",
+  "params": {
+    "n_estimators": 342,
+    "max_depth": 9,
+    "min_samples_split": 4,
+    "min_samples_leaf": 2
+  },
   "scenario": "missingness",
-  "model": "rf"
+  "model": "rf",
+  "dataset": "diamonds_v2"
 }

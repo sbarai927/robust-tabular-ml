@@ -1,8 +1,16 @@
 {
-  "Accuracy": 0.7981520966595593,
-  "F1": 0.5798816568047337,
-  "train_time_sec": 0.4756941795349121,
-  "model_size_mb": 0.5726547241210938,
+  "Accuracy": 0.7960199004975125,
+  "F1": 0.5773195876288659,
+  "train_time_sec": 0.6345601081848145,
+  "model_size_mb": 0.7418212890625,
+  "timestamp": "2026-02-02 18:23:25",
+  "params": {
+    "iterations": 364,
+    "learning_rate": 0.018600002218910443,
+    "depth": 7,
+    "l2_leaf_reg": 0.4737772386034826
+  },
   "scenario": "high_cardinality",
-  "model": "catboost"
+  "model": "catboost",
+  "dataset": "telco"
 }

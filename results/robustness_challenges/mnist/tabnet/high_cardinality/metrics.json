@@ -1,8 +1,21 @@
 {
-  "Accuracy": 0.24166666666666667,
-  "F1": 0.20312986044063092,
-  "train_time_sec": 0.5852401256561279,
-  "model_size_mb": 4.347201347351074,
+  "Accuracy": 0.5611111111111111,
+  "F1": 0.530934370963681,
+  "train_time_sec": 0.2849287986755371,
+  "model_size_mb": 3.0347471237182617,
+  "timestamp": "2026-02-02 18:33:02",
+  "params": {
+    "batch_size": 256,
+    "virtual_batch_size": 512,
+    "n_d": 16,
+    "n_a": 64,
+    "n_steps": 3,
+    "gamma": 1.6574723407434087,
+    "lambda_sparse": 0.0015561306412447816,
+    "momentum": 0.18995477463451427,
+    "learning_rate": 0.04179787746574106
+  },
   "scenario": "high_cardinality",
-  "model": "tabnet"
+  "model": "tabnet",
+  "dataset": "mnist"
 }

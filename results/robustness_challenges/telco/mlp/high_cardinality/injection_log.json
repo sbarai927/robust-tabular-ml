@@ -1,7 +1,7 @@
 {
   "high_cardinality_base_columns": [
-    "gender",
-    "Partner"
+    "MultipleLines",
+    "PaymentMethod"
   ],
   "high_cardinality_new_columns": [
     "high_card_0",

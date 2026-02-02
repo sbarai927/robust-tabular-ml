@@ -53,10 +53,16 @@ Log which features were randomly selected for missingness and high-cardinality i
 
 import argparse
 import json
+import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+os.environ.setdefault("KMP_USE_SHM", "0")
+os.environ.setdefault("KMP_SHM_DISABLE", "1")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
 try:
     import torch
@@ -92,10 +98,7 @@ try:
 except Exception:
     shap = None
 
-try:
-    from lightgbm import LGBMClassifier, LGBMRegressor
-except Exception:
-    LGBMClassifier = LGBMRegressor = None
+LGBMClassifier = LGBMRegressor = None
 
 try:
     from catboost import CatBoostClassifier, CatBoostRegressor
@@ -103,6 +106,8 @@ try:
 except Exception:
     CatBoostClassifier = CatBoostRegressor = None
     cb = None
+
+xgb = None
 
 try:
     from tqdm import tqdm
@@ -146,7 +151,7 @@ DATASETS: Dict[str, DatasetConfig] = {
     ),
 }
 
-MODELS = {"rf", "lgbm", "catboost", "mlp", "tabnet"}
+MODELS = {"rf", "lgbm", "catboost", "xgboost", "mlp", "tabnet"}
 SCENARIOS = ("clean", "missingness", "high_cardinality")
 
 
@@ -287,17 +292,44 @@ def build_model(cfg: DatasetConfig, model_name: str, params: Dict[str, object]):
     is_reg = cfg.task == "regression"
     if model_name == "rf":
         base = RandomForestRegressor if is_reg else RandomForestClassifier
-        return base(random_state=RANDOM_STATE, n_jobs=-1, **params)
+        return base(random_state=RANDOM_STATE, n_jobs=1, **params)
     if model_name == "lgbm":
+        global LGBMClassifier, LGBMRegressor
         if LGBMClassifier is None:
-            raise RuntimeError("lightgbm not installed")
+            try:
+                from lightgbm import LGBMClassifier as _LGBMC, LGBMRegressor as _LGBMR
+                LGBMClassifier, LGBMRegressor = _LGBMC, _LGBMR
+            except Exception:
+                raise RuntimeError("lightgbm not installed")
         base = LGBMRegressor if is_reg else LGBMClassifier
-        return base(random_state=RANDOM_STATE, **params)
+        return base(random_state=RANDOM_STATE, n_jobs=1, **params)
     if model_name == "catboost":
         if CatBoostClassifier is None:
             raise RuntimeError("catboost not installed")
         base = CatBoostRegressor if is_reg else CatBoostClassifier
         return base(random_seed=RANDOM_STATE, verbose=False, **params)
+    if model_name == "xgboost":
+        global xgb
+        if xgb is None:
+            try:
+                import xgboost as _xgb
+                xgb = _xgb
+            except Exception:
+                raise RuntimeError("xgboost not installed")
+        if is_reg:
+            return xgb.XGBRegressor(
+                random_state=RANDOM_STATE,
+                n_jobs=1,
+                eval_metric="rmse",
+                **params,
+            )
+        metric = "mlogloss" if cfg.is_multiclass else "logloss"
+        return xgb.XGBClassifier(
+            random_state=RANDOM_STATE,
+            n_jobs=1,
+            eval_metric=metric,
+            **params,
+        )
     if model_name == "mlp":
         if "hidden_layer_sizes" in params:
             hls = params["hidden_layer_sizes"]
@@ -390,6 +422,14 @@ def fit_and_evaluate(
             )
             preds = model.predict(X_test_proc)
             y_eval = y_test
+    elif model_name == "xgboost" and cfg.task == "classification":
+        model = build_model(cfg, model_name, params.copy())
+        le = LabelEncoder()
+        y_train_enc = le.fit_transform(np.asarray(y_train))
+        y_test_enc = le.transform(np.asarray(y_test))
+        model.fit(X_train_proc, y_train_enc)
+        preds = model.predict(X_test_proc)
+        y_eval = y_test_enc
     else:
         model = build_model(cfg, model_name, params.copy())
         model.fit(X_train_proc, y_train)
@@ -410,7 +450,13 @@ def fit_and_evaluate(
     model_size_mb = model_path.stat().st_size / (1024 * 1024)
 
     # Save timing and size metadata.
-    meta = {"train_time_sec": float(elapsed), "model_size_mb": float(model_size_mb)}
+    meta = {
+        "train_time_sec": float(elapsed),
+        "model_size_mb": float(model_size_mb),
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "params": params,
+        "scenario": scenario,
+    }
     with open(out_dir / f"meta_{scenario}.json", "w") as f:
         json.dump(meta, f, indent=2)
 
@@ -434,29 +480,62 @@ def _feature_names(preprocessor: ColumnTransformer) -> List[str]:
 
 def compute_shap_importance(
     model,
+    model_name: str,
     X_sample: np.ndarray,
     feature_names: List[str],
+    max_kernel_samples: int = 100,
 ) -> Dict[str, float]:
     # Compute mean absolute SHAP values for a small sample.
-    if model.__class__.__name__.startswith("CatBoost") and cb is not None:
-        pool = cb.Pool(X_sample, feature_names=feature_names)
-        values = model.get_feature_importance(pool, type="ShapValues")
-        values = np.asarray(values)
-        if values.ndim == 3:
-            values = np.mean(np.abs(values[:, :, :-1]), axis=0)
-        else:
-            values = np.abs(values[:, :-1]).mean(axis=0)
-        return {feature_names[i]: float(values[i]) for i in range(len(feature_names))}
     if shap is None:
         raise RuntimeError("shap not installed")
-    explainer = shap.Explainer(model, X_sample, feature_names=feature_names)
-    shap_values = explainer(X_sample)
-    values = shap_values.values
-    if values.ndim == 3:
-        values = np.mean(np.abs(values), axis=0)
+    if model_name in {"rf", "lgbm", "catboost", "xgboost"}:
+        if model.__class__.__name__.startswith("CatBoost") and cb is not None:
+            pool = cb.Pool(X_sample, feature_names=feature_names)
+            values = model.get_feature_importance(pool, type="ShapValues")
+            values = np.asarray(values)
+            if values.ndim == 3:
+                values = np.mean(np.abs(values[:, :, :-1]), axis=0)
+                if values.ndim == 2:
+                    values = values.mean(axis=1)
+            else:
+                values = np.abs(values[:, :-1]).mean(axis=0)
+            limit = min(len(feature_names), len(values))
+            return {feature_names[i]: float(values[i]) for i in range(limit)}
+        explainer = shap.TreeExplainer(model)
+        shap_values = explainer.shap_values(X_sample, check_additivity=False)
+        if isinstance(shap_values, list):
+            values = np.mean([np.abs(v) for v in shap_values], axis=0)
+        else:
+            values = np.abs(shap_values)
+        if values.ndim == 3:
+            values = values.mean(axis=(0, 2))
+        else:
+            values = values.mean(axis=0)
+        limit = min(len(feature_names), len(values))
+        return {feature_names[i]: float(values[i]) for i in range(limit)}
+
+    # MLP/TabNet: kernel explainer on a small sample.
+    if model_name == "tabnet":
+        predict_fn = model.predict_proba if hasattr(model, "predict_proba") else model.predict
+        X_sample = np.asarray(X_sample, dtype=np.float32)
     else:
-        values = np.abs(values).mean(axis=0)
-    return {feature_names[i]: float(values[i]) for i in range(len(feature_names))}
+        predict_fn = model.predict_proba if hasattr(model, "predict_proba") else model.predict
+    sample_n = min(max_kernel_samples, X_sample.shape[0])
+    background = shap.utils.sample(X_sample, min(50, sample_n))
+    explainer = shap.KernelExplainer(predict_fn, background)
+    shap_values = explainer.shap_values(
+        X_sample[:sample_n], nsamples=30, l1_reg="num_features(10)"
+    )
+    if isinstance(shap_values, list):
+        values = np.mean([np.abs(v) for v in shap_values], axis=0)
+    else:
+        values = np.abs(shap_values)
+    if values.ndim == 3:
+        values = values.mean(axis=(0, 2))
+    else:
+        values = values.mean(axis=0)
+    limit = min(len(feature_names), len(values))
+    return {feature_names[i]: float(values[i]) for i in range(limit)}
 
 
 def top_k_features(importance: Dict[str, float], k: int = 10) -> List[str]:
@@ -515,7 +594,11 @@ def main() -> None:
         rng = np.random.default_rng(RANDOM_STATE)
 
         for model_name in models:
-            params = load_best_params(cfg, model_name)
+            try:
+                params = load_best_params(cfg, model_name)
+            except Exception as exc:
+                print(f"⚠️ Missing params for {cfg.name}/{model_name}: {exc}")
+                continue
             model_output_dir = ROBUST_DIR / cfg.name / model_name
             model_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -570,43 +653,62 @@ def main() -> None:
                             indent=2,
                         )
 
-                metrics, model, preprocessor, X_test_proc = fit_and_evaluate(
-                    cfg,
-                    model_name,
-                    X_train_s,
-                    X_test_s,
-                    y_train,
-                    y_test,
-                    params,
-                    scenario,
-                    scenario_dir,
-                )
-                with open(metrics_path, "w") as f:
-                    json.dump(metrics, f, indent=2)
-                metrics_rows.append(metrics)
+                try:
+                    metrics, model, preprocessor, X_test_proc = fit_and_evaluate(
+                        cfg,
+                        model_name,
+                        X_train_s,
+                        X_test_s,
+                        y_train,
+                        y_test,
+                        params,
+                        scenario,
+                        scenario_dir,
+                    )
+                    metrics["dataset"] = cfg.name
+                    with open(metrics_path, "w") as f:
+                        json.dump(metrics, f, indent=2)
+                    metrics_rows.append(metrics)
+                except Exception as exc:
+                    warn_path = scenario_dir / "error.json"
+                    warn_path.parent.mkdir(parents=True, exist_ok=True)
+                    with open(warn_path, "w") as f:
+                        json.dump({"error": str(exc)}, f, indent=2)
+                    print(f"⚠️ Failed {cfg.name}/{model_name}/{scenario}: {exc}")
+                    continue
 
                 # Compute SHAP delta on a small sample.
                 if shap is not None:
+                    sample_cap = 200 if model_name in {"rf", "lgbm", "catboost", "xgboost"} else 50
                     sample_idx = np.random.default_rng(RANDOM_STATE).choice(
-                        X_test_proc.shape[0], size=min(200, X_test_proc.shape[0]), replace=False
+                        X_test_proc.shape[0], size=min(sample_cap, X_test_proc.shape[0]), replace=False
                     )
                     X_sample = X_test_proc[sample_idx]
                     feature_names = _feature_names(preprocessor)
+                    if X_sample.shape[1] != len(feature_names):
+                        feature_names = [f"f{i}" for i in range(X_sample.shape[1])]
                     try:
-                        importance = compute_shap_importance(model, X_sample, feature_names)
+                        importance = compute_shap_importance(
+                            model, model_name, X_sample, feature_names
+                        )
                         top_list = top_k_features(importance, k=10)
                         shap_top_k[scenario] = top_list
                         if scenario == "clean":
                             shap_clean_top = top_list
                         else:
                             shap_comparisons[scenario] = top_list
-                    except Exception:
+                    except Exception as exc:
+                        print(f"⚠️ SHAP failed {cfg.name}/{model_name}/{scenario}: {exc}")
                         continue
 
-            if shap_clean_top and shap_comparisons:
-                save_shap_delta(cfg, model_name, shap_clean_top, shap_comparisons)
             if shap_top_k:
                 save_shap_top_k(cfg, model_name, shap_top_k)
+            if shap_top_k and "clean" in shap_top_k:
+                comparisons = {
+                    k: v for k, v in shap_top_k.items() if k != "clean"
+                }
+                if comparisons:
+                    save_shap_delta(cfg, model_name, shap_top_k["clean"], comparisons)
 
         metrics_df = pd.DataFrame(metrics_rows)
         metrics_df.to_csv(ROBUST_DIR / f"metrics_{cfg.name}.csv", index=False)

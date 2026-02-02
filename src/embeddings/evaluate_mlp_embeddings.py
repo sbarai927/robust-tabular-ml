@@ -95,10 +95,26 @@ Add argparse and log output summaries to terminal."
 
 import argparse
 import json
+import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+os.environ.setdefault("KMP_USE_SHM", "0")
+os.environ.setdefault("KMP_SHM_DISABLE", "1")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+os.environ.setdefault("MPLBACKEND", "Agg")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
+
+try:
+    import torch  # noqa: F401
+except Exception:
+    torch = None
 
 import joblib
 import numpy as np
@@ -108,6 +124,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.neural_network import MLPClassifier
@@ -126,6 +143,7 @@ RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 EXTENDED_DIR = Path("results/embeddings_extended_analysis")
 EXTENDED_DIR.mkdir(parents=True, exist_ok=True)
+SKIP_LGBM_LEAF = os.getenv("SKIP_LGBM_LEAF", "false").lower() == "true"
 
 
 @dataclass
@@ -488,7 +506,7 @@ def train_and_eval(
         clf = LogisticRegression(max_iter=1000, multi_class="auto")
         model = Pipeline([("scaler", StandardScaler()), ("clf", clf)])
     elif classifier_name == "rf":
-        model = RandomForestClassifier(n_estimators=200, random_state=RANDOM_STATE, n_jobs=-1)
+        model = RandomForestClassifier(n_estimators=200, random_state=RANDOM_STATE, n_jobs=1)
     else:
         clf = MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=300, random_state=RANDOM_STATE)
         model = Pipeline([("scaler", StandardScaler()), ("clf", clf)])
@@ -662,7 +680,31 @@ def main() -> None:
         mlp_path = Path("results/hpo") / cfg.name / "mlp" / "best_model.pkl"
         if not mlp_path.exists():
             raise FileNotFoundError(f"Missing MLP model at {mlp_path}")
-        mlp_model = joblib.load(mlp_path)
+        try:
+            mlp_model = joblib.load(mlp_path)
+        except Exception:
+            params_path = Path("results/hpo") / cfg.name / "mlp" / "best_params.json"
+            if not params_path.exists():
+                raise
+            params = json.loads(params_path.read_text())
+            if "hidden_layer_sizes" in params and isinstance(params["hidden_layer_sizes"], list):
+                params["hidden_layer_sizes"] = tuple(params["hidden_layer_sizes"])
+            if cfg.task == "regression":
+                mlp_model = MLPRegressor(
+                    max_iter=200,
+                    random_state=RANDOM_STATE,
+                    early_stopping=True,
+                    **params,
+                )
+            else:
+                mlp_model = MLPClassifier(
+                    max_iter=200,
+                    random_state=RANDOM_STATE,
+                    early_stopping=True,
+                    **params,
+                )
+            # Fallback: retrain with best params if pickle is incompatible.
+            mlp_model.fit(X_full_proc, y_target)
 
         # Extract embeddings for full dataset and save.
         embeddings_full = extract_mlp_embeddings(mlp_model, X_full_proc)
@@ -698,18 +740,22 @@ def main() -> None:
 
         # Optional tree-based embeddings via LightGBM leaf indices.
         lgbm_path = Path("results/hpo") / cfg.name / "lgbm" / "best_model.pkl"
-        if lgbm_path.exists():
-            lgbm_model = joblib.load(lgbm_path)
-            lgbm_leaf_full = extract_lgbm_leaf_embeddings(lgbm_model, X_full_proc)
-            np.save(RESULTS_DIR / f"{cfg.name}_lgbm_leaf_embeddings.npy", lgbm_leaf_full)
-            lgbm_leaf_train = extract_lgbm_leaf_embeddings(lgbm_model, X_train)
-            lgbm_leaf_test = extract_lgbm_leaf_embeddings(lgbm_model, X_test)
-            feature_sets_split["lgbm_leaf"] = (
-                lgbm_leaf_train,
-                lgbm_leaf_test,
-                lgbm_leaf_train.shape[1],
-            )
-            feature_sets_full["lgbm_leaf"] = (lgbm_leaf_full, lgbm_leaf_full.shape[1])
+        if lgbm_path.exists() and not SKIP_LGBM_LEAF:
+            try:
+                lgbm_model = joblib.load(lgbm_path)
+            except Exception:
+                lgbm_model = None
+            if lgbm_model is not None:
+                lgbm_leaf_full = extract_lgbm_leaf_embeddings(lgbm_model, X_full_proc)
+                np.save(RESULTS_DIR / f"{cfg.name}_lgbm_leaf_embeddings.npy", lgbm_leaf_full)
+                lgbm_leaf_train = extract_lgbm_leaf_embeddings(lgbm_model, X_train)
+                lgbm_leaf_test = extract_lgbm_leaf_embeddings(lgbm_model, X_test)
+                feature_sets_split["lgbm_leaf"] = (
+                    lgbm_leaf_train,
+                    lgbm_leaf_test,
+                    lgbm_leaf_train.shape[1],
+                )
+                feature_sets_full["lgbm_leaf"] = (lgbm_leaf_full, lgbm_leaf_full.shape[1])
 
         for feature_name, (X_tr, X_te, dim) in feature_sets_split.items():
             if args.cv and args.cv > 1:

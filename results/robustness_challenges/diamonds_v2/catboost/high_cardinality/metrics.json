@@ -1,9 +1,17 @@
 {
-  "MAE": 715.0700102443437,
-  "RMSE": 8974.557204091956,
-  "R2": 0.8963122947819622,
-  "train_time_sec": 2.9259111881256104,
-  "model_size_mb": 0.11833667755126953,
+  "MAE": 732.7457937502464,
+  "RMSE": 9556.376915987115,
+  "R2": 0.8824323753332612,
+  "train_time_sec": 2.7464797496795654,
+  "model_size_mb": 0.11842823028564453,
+  "timestamp": "2026-02-02 18:10:30",
+  "params": {
+    "iterations": 355,
+    "learning_rate": 0.18864949166858644,
+    "depth": 4,
+    "l2_leaf_reg": 0.015393248535710483
+  },
   "scenario": "high_cardinality",
-  "model": "catboost"
+  "model": "catboost",
+  "dataset": "diamonds_v2"
 }

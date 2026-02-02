@@ -1,4 +1,12 @@
 {
-  "train_time_sec": 0.31507396697998047,
-  "model_size_mb": 23.364266395568848
+  "train_time_sec": 0.8554508686065674,
+  "model_size_mb": 23.364266395568848,
+  "timestamp": "2026-02-02 18:20:17",
+  "params": {
+    "n_estimators": 371,
+    "max_depth": 15,
+    "min_samples_split": 5,
+    "min_samples_leaf": 3
+  },
+  "scenario": "missingness"
 }

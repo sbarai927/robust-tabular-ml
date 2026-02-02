@@ -1,6 +1,6 @@
 {
   "high_cardinality_base_columns": [
-    "eye_clean",
+    "cut_quality",
     "color"
   ],
   "high_cardinality_new_columns": [

@@ -1,10 +1,10 @@
 {
   "missingness_rate": 0.15,
   "missingness_columns": [
-    "girdle_min",
-    "culet_size",
-    "meas_width",
-    "cut",
-    "fancy_color_intensity"
+    "depth_percent",
+    "table_percent",
+    "eye_clean",
+    "fancy_color_secondary_color",
+    "meas_length"
   ]
 }

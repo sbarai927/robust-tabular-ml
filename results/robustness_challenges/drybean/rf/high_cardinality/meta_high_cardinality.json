@@ -1,4 +1,12 @@
 {
-  "train_time_sec": 0.3245728015899658,
-  "model_size_mb": 23.568886756896973
+  "train_time_sec": 1.0486669540405273,
+  "model_size_mb": 23.568886756896973,
+  "timestamp": "2026-02-02 18:20:22",
+  "params": {
+    "n_estimators": 371,
+    "max_depth": 15,
+    "min_samples_split": 5,
+    "min_samples_leaf": 3
+  },
+  "scenario": "high_cardinality"
 }

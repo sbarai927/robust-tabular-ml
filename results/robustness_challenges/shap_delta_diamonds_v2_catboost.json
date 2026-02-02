@@ -7,9 +7,9 @@
     "meas_length",
     "meas_width",
     "meas_depth",
-    "depth_percent",
-    "cut",
-    "fluor_intensity"
+    "lab",
+    "fancy_color_intensity",
+    "depth_percent"
   ],
   "comparisons": {
     "missingness": {
@@ -17,13 +17,13 @@
         "Unnamed: 0",
         "carat_weight",
         "color",
-        "clarity",
         "meas_depth",
+        "clarity",
         "meas_width",
-        "meas_length",
         "lab",
+        "depth_percent",
         "fluor_intensity",
-        "girdle_max"
+        "fancy_color_dominant_color"
       ],
       "overlap_count": 8,
       "jaccard": 0.6666666666666666
@@ -34,15 +34,15 @@
         "carat_weight",
         "color",
         "clarity",
-        "meas_depth",
-        "depth_percent",
-        "meas_width",
-        "meas_length",
         "high_card_1",
-        "lab"
+        "meas_depth",
+        "meas_length",
+        "meas_width",
+        "lab",
+        "depth_percent"
       ],
-      "overlap_count": 8,
-      "jaccard": 0.6666666666666666
+      "overlap_count": 9,
+      "jaccard": 0.8181818181818182
     }
   }
 }

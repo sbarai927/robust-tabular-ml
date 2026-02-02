@@ -2,44 +2,44 @@
   "clean_top_k": [
     "Contract",
     "tenure",
-    "InternetService",
     "OnlineSecurity",
-    "TechSupport",
     "MonthlyCharges",
+    "InternetService",
+    "TechSupport",
     "TotalCharges",
     "PaymentMethod",
     "MultipleLines",
-    "StreamingTV"
+    "customerID"
   ],
   "comparisons": {
     "missingness": {
       "top_k": [
         "Contract",
-        "MonthlyCharges",
         "tenure",
-        "OnlineSecurity",
+        "InternetService",
         "TechSupport",
+        "OnlineSecurity",
         "TotalCharges",
         "PaymentMethod",
-        "InternetService",
-        "OnlineBackup",
-        "StreamingMovies"
+        "MultipleLines",
+        "StreamingMovies",
+        "MonthlyCharges"
       ],
-      "overlap_count": 8,
-      "jaccard": 0.6666666666666666
+      "overlap_count": 9,
+      "jaccard": 0.8181818181818182
     },
     "high_cardinality": {
       "top_k": [
         "Contract",
         "tenure",
         "InternetService",
-        "MonthlyCharges",
-        "OnlineSecurity",
         "TechSupport",
-        "TotalCharges",
+        "OnlineSecurity",
+        "MonthlyCharges",
+        "PaymentMethod",
         "MultipleLines",
-        "StreamingMovies",
-        "PaymentMethod"
+        "TotalCharges",
+        "OnlineBackup"
       ],
       "overlap_count": 9,
       "jaccard": 0.8181818181818182

@@ -1,0 +1,48 @@
+{
+  "clean_top_k": [
+    "V21",
+    "V17",
+    "V6",
+    "V5",
+    "V14",
+    "V20",
+    "V19",
+    "V18",
+    "V1",
+    "V8"
+  ],
+  "comparisons": {
+    "missingness": {
+      "top_k": [
+        "V6",
+        "V21",
+        "V17",
+        "V18",
+        "V20",
+        "V1",
+        "V19",
+        "V14",
+        "V5",
+        "V8"
+      ],
+      "overlap_count": 10,
+      "jaccard": 1.0
+    },
+    "high_cardinality": {
+      "top_k": [
+        "V21",
+        "V5",
+        "V20",
+        "V6",
+        "high_card_1",
+        "high_card_0",
+        "V1",
+        "V18",
+        "V17",
+        "V19"
+      ],
+      "overlap_count": 8,
+      "jaccard": 0.6666666666666666
+    }
+  }
+}

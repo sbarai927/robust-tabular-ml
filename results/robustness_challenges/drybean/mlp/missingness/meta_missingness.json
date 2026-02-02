@@ -1,4 +1,14 @@
 {
-  "train_time_sec": 0.927117109298706,
-  "model_size_mb": 0.44785499572753906
+  "train_time_sec": 0.7261409759521484,
+  "model_size_mb": 0.44806861877441406,
+  "timestamp": "2026-02-02 18:20:34",
+  "params": {
+    "alpha": 2.6087863453193185e-05,
+    "learning_rate_init": 0.001289006262198419,
+    "hidden_layer_sizes": [
+      231,
+      70
+    ]
+  },
+  "scenario": "missingness"
 }

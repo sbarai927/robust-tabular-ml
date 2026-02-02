@@ -2,8 +2,16 @@
   "MAE": 41.6388627728787,
   "RMSE": 789.395717296177,
   "R2": 0.9991977850808702,
-  "train_time_sec": 34.2746798992157,
+  "train_time_sec": 147.95081114768982,
   "model_size_mb": 18.224854469299316,
+  "timestamp": "2026-02-02 18:04:38",
+  "params": {
+    "n_estimators": 342,
+    "max_depth": 9,
+    "min_samples_split": 4,
+    "min_samples_leaf": 2
+  },
   "scenario": "clean",
-  "model": "rf"
+  "model": "rf",
+  "dataset": "diamonds_v2"
 }

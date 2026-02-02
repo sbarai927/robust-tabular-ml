@@ -1,4 +1,17 @@
 {
-  "train_time_sec": 47.56085181236267,
-  "model_size_mb": 3.575800895690918
+  "train_time_sec": 29.79583215713501,
+  "model_size_mb": 3.5752973556518555,
+  "timestamp": "2026-02-02 18:19:39",
+  "params": {
+    "batch_size": 512,
+    "virtual_batch_size": 512,
+    "n_d": 48,
+    "n_a": 48,
+    "n_steps": 3,
+    "gamma": 1.148092057267047,
+    "lambda_sparse": 0.0003759825417556633,
+    "momentum": 0.2555207477651966,
+    "learning_rate": 0.012170668949596066
+  },
+  "scenario": "missingness"
 }

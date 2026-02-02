@@ -1,9 +1,9 @@
 {
   "missingness_rate": 0.15,
   "missingness_columns": [
-    "InternetService",
-    "SeniorCitizen",
+    "tenure",
     "TotalCharges",
-    "PaperlessBilling"
+    "StreamingTV",
+    "InternetService"
   ]
 }

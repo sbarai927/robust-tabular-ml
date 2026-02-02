@@ -1,8 +1,21 @@
 {
-  "Accuracy": 0.7377398720682303,
-  "F1": 0.1670428893905192,
-  "train_time_sec": 1.1225080490112305,
-  "model_size_mb": 1.7503538131713867,
+  "Accuracy": 0.7547974413646056,
+  "F1": 0.49927431059506533,
+  "train_time_sec": 0.8307719230651855,
+  "model_size_mb": 1.7496061325073242,
+  "timestamp": "2026-02-02 18:32:11",
+  "params": {
+    "batch_size": 256,
+    "virtual_batch_size": 256,
+    "n_d": 24,
+    "n_a": 40,
+    "n_steps": 3,
+    "gamma": 1.2921446485352182,
+    "lambda_sparse": 2.9204338471814107e-05,
+    "momentum": 0.18786729384464404,
+    "learning_rate": 0.02157696745589683
+  },
   "scenario": "high_cardinality",
-  "model": "tabnet"
+  "model": "tabnet",
+  "dataset": "telco"
 }

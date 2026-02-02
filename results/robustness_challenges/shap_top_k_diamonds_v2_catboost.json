@@ -7,32 +7,32 @@
     "meas_length",
     "meas_width",
     "meas_depth",
-    "depth_percent",
-    "cut",
-    "fluor_intensity"
+    "lab",
+    "fancy_color_intensity",
+    "depth_percent"
   ],
   "missingness": [
     "Unnamed: 0",
     "carat_weight",
     "color",
-    "clarity",
     "meas_depth",
+    "clarity",
     "meas_width",
-    "meas_length",
     "lab",
+    "depth_percent",
     "fluor_intensity",
-    "girdle_max"
+    "fancy_color_dominant_color"
   ],
   "high_cardinality": [
     "Unnamed: 0",
     "carat_weight",
     "color",
     "clarity",
-    "meas_depth",
-    "depth_percent",
-    "meas_width",
-    "meas_length",
     "high_card_1",
-    "lab"
+    "meas_depth",
+    "meas_length",
+    "meas_width",
+    "lab",
+    "depth_percent"
   ]
 }

@@ -2,8 +2,8 @@
   "missingness_rate": 0.15,
   "missingness_columns": [
     "InternetService",
-    "gender",
-    "TechSupport",
-    "StreamingTV"
+    "SeniorCitizen",
+    "TotalCharges",
+    "PaperlessBilling"
   ]
 }

@@ -1,9 +1,19 @@
 {
-  "MAE": 867.7535662355788,
-  "RMSE": 11090.625400304285,
-  "R2": 0.8416517470780753,
-  "train_time_sec": 742.3891394138336,
-  "model_size_mb": 8.906085968017578,
+  "MAE": 1229.251708869892,
+  "RMSE": 11440.300651968539,
+  "R2": 0.831509244167358,
+  "train_time_sec": 316.88247895240784,
+  "model_size_mb": 11.540741920471191,
+  "timestamp": "2026-02-02 18:18:37",
+  "params": {
+    "alpha": 0.003844041400878631,
+    "learning_rate_init": 0.0039042854472260214,
+    "hidden_layer_sizes": [
+      155,
+      116
+    ]
+  },
   "scenario": "high_cardinality",
-  "model": "mlp"
+  "model": "mlp",
+  "dataset": "diamonds_v2"
 }
