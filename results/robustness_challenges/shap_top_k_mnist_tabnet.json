@@ -1,0 +1,38 @@
+{
+  "clean": [
+    "pixel_0_4",
+    "pixel_4_2",
+    "pixel_5_3",
+    "pixel_1_1",
+    "pixel_0_5",
+    "pixel_2_1",
+    "pixel_3_5",
+    "pixel_5_7",
+    "pixel_2_5",
+    "pixel_0_6"
+  ],
+  "missingness": [
+    "pixel_6_6",
+    "pixel_7_2",
+    "pixel_4_5",
+    "pixel_7_5",
+    "pixel_4_3",
+    "pixel_7_7",
+    "pixel_4_2",
+    "pixel_2_2",
+    "pixel_4_1",
+    "pixel_1_2"
+  ],
+  "high_cardinality": [
+    "pixel_7_4",
+    "pixel_4_1",
+    "pixel_3_1",
+    "pixel_4_2",
+    "pixel_3_3",
+    "pixel_6_7",
+    "pixel_6_4",
+    "pixel_5_5",
+    "pixel_4_5",
+    "pixel_6_6"
+  ]
+}

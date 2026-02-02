@@ -1,17 +1,17 @@
 {
   "missingness_rate": 0.15,
   "missingness_columns": [
-    "pixel_1_2",
-    "pixel_3_7",
-    "pixel_1_6",
-    "pixel_7_5",
-    "pixel_5_1",
-    "pixel_2_0",
     "pixel_0_4",
-    "pixel_3_0",
+    "pixel_2_2",
+    "pixel_4_4",
+    "pixel_0_2",
     "pixel_6_3",
-    "pixel_2_1",
-    "pixel_3_5",
-    "pixel_6_5"
+    "pixel_0_0",
+    "pixel_4_6",
+    "pixel_1_1",
+    "pixel_1_3",
+    "pixel_4_5",
+    "pixel_5_4",
+    "pixel_5_2"
   ]
 }
