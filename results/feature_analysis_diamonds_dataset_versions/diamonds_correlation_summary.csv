@@ -1,0 +1,18 @@
+comparison,max_abs_corr_diff,removed_columns
+v1_vs_v2,0.0,
+v1_vs_v3,0.0,meas_length;meas_width
+v1_top_corr,0.7889115375005467,carat_weight vs meas_width
+v1_top_corr,0.78865228991161,meas_length vs meas_width
+v1_top_corr,0.7826832801862122,carat_weight vs meas_length
+v1_top_corr,0.7459630205553478,carat_weight vs total_sales_price
+v1_top_corr,0.6738350614793355,depth_percent vs table_percent
+v2_top_corr,0.7889115375005467,carat_weight vs meas_width
+v2_top_corr,0.78865228991161,meas_length vs meas_width
+v2_top_corr,0.7826832801862122,carat_weight vs meas_length
+v2_top_corr,0.7459630205553478,carat_weight vs total_sales_price
+v2_top_corr,0.6738350614793355,depth_percent vs table_percent
+v3_top_corr,0.7459630205553478,carat_weight vs total_sales_price
+v3_top_corr,0.6738350614793355,depth_percent vs table_percent
+v3_top_corr,0.3507188874555532,carat_weight vs meas_depth
+v3_top_corr,0.21640998174724943,meas_depth vs total_sales_price
+v3_top_corr,0.09069690056035895,carat_weight vs table_percent
