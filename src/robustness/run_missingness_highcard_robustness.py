@@ -710,8 +710,23 @@ def main() -> None:
                 if comparisons:
                     save_shap_delta(cfg, model_name, shap_top_k["clean"], comparisons)
 
-        metrics_df = pd.DataFrame(metrics_rows)
-        metrics_df.to_csv(ROBUST_DIR / f"metrics_{cfg.name}.csv", index=False)
+        # Rebuild aggregate metrics from disk to avoid partial overwrites.
+        aggregate_rows: List[Dict[str, object]] = []
+        dataset_dir = ROBUST_DIR / cfg.name
+        for metrics_path in sorted(dataset_dir.glob("*/*/metrics.json")):
+            try:
+                with open(metrics_path, "r") as f:
+                    row = json.load(f)
+                aggregate_rows.append(row)
+            except Exception:
+                continue
+        metrics_df = pd.DataFrame(aggregate_rows if aggregate_rows else metrics_rows)
+        if not metrics_df.empty:
+            cols = ["dataset", "model", "scenario"] + [
+                c for c in metrics_df.columns if c not in {"dataset", "model", "scenario"}
+            ]
+            metrics_df = metrics_df[[c for c in cols if c in metrics_df.columns]]
+            metrics_df.to_csv(ROBUST_DIR / f"metrics_{cfg.name}.csv", index=False)
 
 
 if __name__ == "__main__":
