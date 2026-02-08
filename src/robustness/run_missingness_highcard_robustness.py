@@ -478,11 +478,28 @@ def _feature_names(preprocessor: ColumnTransformer) -> List[str]:
     return [str(n) for n in names]
 
 
+def _collapse_one_hot_importance(
+    importance: Dict[str, float], base_cols: List[str]
+) -> Dict[str, float]:
+    aggregated: Dict[str, float] = {}
+    for name, value in importance.items():
+        base_match = None
+        for base in base_cols:
+            prefix = f"{base}_"
+            if name.startswith(prefix):
+                base_match = base
+                break
+        key = base_match if base_match is not None else name
+        aggregated[key] = aggregated.get(key, 0.0) + float(value)
+    return aggregated
+
+
 def compute_shap_importance(
     model,
     model_name: str,
     X_sample: np.ndarray,
     feature_names: List[str],
+    one_hot_base_cols: List[str] | None = None,
     max_kernel_samples: int = 100,
 ) -> Dict[str, float]:
     # Compute mean absolute SHAP values for a small sample.
@@ -512,7 +529,10 @@ def compute_shap_importance(
         else:
             values = values.mean(axis=0)
         limit = min(len(feature_names), len(values))
-        return {feature_names[i]: float(values[i]) for i in range(limit)}
+        importance = {feature_names[i]: float(values[i]) for i in range(limit)}
+        if model_name == "mlp" and one_hot_base_cols:
+            return _collapse_one_hot_importance(importance, one_hot_base_cols)
+        return importance
 
     # MLP/TabNet: kernel explainer on a small sample.
     if model_name == "tabnet":
@@ -535,7 +555,10 @@ def compute_shap_importance(
     else:
         values = values.mean(axis=0)
     limit = min(len(feature_names), len(values))
-    return {feature_names[i]: float(values[i]) for i in range(limit)}
+    importance = {feature_names[i]: float(values[i]) for i in range(limit)}
+    if model_name == "mlp" and one_hot_base_cols:
+        return _collapse_one_hot_importance(importance, one_hot_base_cols)
+    return importance
 
 
 def top_k_features(importance: Dict[str, float], k: int = 10) -> List[str]:
@@ -580,6 +603,11 @@ def main() -> None:
     parser.add_argument("--datasets", nargs="+", default=list(DATASETS.keys()))
     parser.add_argument("--models", nargs="+", default=sorted(MODELS))
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument(
+        "--shap-only",
+        action="store_true",
+        help="Recompute SHAP top-k/delta using existing models without retraining.",
+    )
     args = parser.parse_args()
 
     datasets = [d for d in args.datasets if d in DATASETS]
@@ -594,11 +622,13 @@ def main() -> None:
         rng = np.random.default_rng(RANDOM_STATE)
 
         for model_name in models:
-            try:
-                params = load_best_params(cfg, model_name)
-            except Exception as exc:
-                print(f"⚠️ Missing params for {cfg.name}/{model_name}: {exc}")
-                continue
+            params = None
+            if not args.shap_only:
+                try:
+                    params = load_best_params(cfg, model_name)
+                except Exception as exc:
+                    print(f"⚠️ Missing params for {cfg.name}/{model_name}: {exc}")
+                    continue
             model_output_dir = ROBUST_DIR / cfg.name / model_name
             model_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -609,7 +639,7 @@ def main() -> None:
             for scenario in SCENARIOS:
                 scenario_dir = model_output_dir / scenario
                 metrics_path = scenario_dir / "metrics.json"
-                if metrics_path.exists() and not args.overwrite:
+                if not args.shap_only and metrics_path.exists() and not args.overwrite:
                     with open(metrics_path, "r") as f:
                         metrics_rows.append(json.load(f))
                     continue
@@ -653,29 +683,56 @@ def main() -> None:
                             indent=2,
                         )
 
-                try:
-                    metrics, model, preprocessor, X_test_proc = fit_and_evaluate(
-                        cfg,
-                        model_name,
-                        X_train_s,
-                        X_test_s,
-                        y_train,
-                        y_test,
-                        params,
-                        scenario,
-                        scenario_dir,
-                    )
-                    metrics["dataset"] = cfg.name
-                    with open(metrics_path, "w") as f:
-                        json.dump(metrics, f, indent=2)
-                    metrics_rows.append(metrics)
-                except Exception as exc:
-                    warn_path = scenario_dir / "error.json"
-                    warn_path.parent.mkdir(parents=True, exist_ok=True)
-                    with open(warn_path, "w") as f:
-                        json.dump({"error": str(exc)}, f, indent=2)
-                    print(f"⚠️ Failed {cfg.name}/{model_name}/{scenario}: {exc}")
-                    continue
+                if args.shap_only:
+                    model_path = scenario_dir / "best_model.pkl"
+                    if not model_path.exists():
+                        print(f"⚠️ Missing model for SHAP: {model_path}")
+                        continue
+                    try:
+                        preprocessor = build_preprocessor(X_train_s, model_name)
+                        X_train_proc = preprocessor.fit_transform(X_train_s)
+                        X_test_proc = preprocessor.transform(X_test_s)
+                        if hasattr(X_train_proc, "toarray"):
+                            X_test_proc = X_test_proc.toarray()
+                        if model_name == "tabnet":
+                            X_test_proc = np.asarray(X_test_proc, dtype=np.float32)
+                        model = joblib.load(model_path)
+                        # Align MLP input shape with expected model input if schema drifted.
+                        if model_name == "mlp" and hasattr(model, "coefs_"):
+                            expected = model.coefs_[0].shape[0]
+                            current = X_test_proc.shape[1]
+                            if current < expected:
+                                pad = np.zeros((X_test_proc.shape[0], expected - current))
+                                X_test_proc = np.hstack([X_test_proc, pad])
+                            elif current > expected:
+                                X_test_proc = X_test_proc[:, :expected]
+                    except Exception as exc:
+                        print(f"⚠️ Failed SHAP prep {cfg.name}/{model_name}/{scenario}: {exc}")
+                        continue
+                else:
+                    try:
+                        metrics, model, preprocessor, X_test_proc = fit_and_evaluate(
+                            cfg,
+                            model_name,
+                            X_train_s,
+                            X_test_s,
+                            y_train,
+                            y_test,
+                            params,
+                            scenario,
+                            scenario_dir,
+                        )
+                        metrics["dataset"] = cfg.name
+                        with open(metrics_path, "w") as f:
+                            json.dump(metrics, f, indent=2)
+                        metrics_rows.append(metrics)
+                    except Exception as exc:
+                        warn_path = scenario_dir / "error.json"
+                        warn_path.parent.mkdir(parents=True, exist_ok=True)
+                        with open(warn_path, "w") as f:
+                            json.dump({"error": str(exc)}, f, indent=2)
+                        print(f"⚠️ Failed {cfg.name}/{model_name}/{scenario}: {exc}")
+                        continue
 
                 # Compute SHAP delta on a small sample.
                 if shap is not None:
@@ -685,11 +742,24 @@ def main() -> None:
                     )
                     X_sample = X_test_proc[sample_idx]
                     feature_names = _feature_names(preprocessor)
-                    if X_sample.shape[1] != len(feature_names):
-                        feature_names = [f"f{i}" for i in range(X_sample.shape[1])]
+                    if len(feature_names) < X_sample.shape[1]:
+                        extra = X_sample.shape[1] - len(feature_names)
+                        feature_names = feature_names + [f"pad_{i}" for i in range(extra)]
+                    elif len(feature_names) > X_sample.shape[1]:
+                        feature_names = feature_names[: X_sample.shape[1]]
+                    one_hot_base_cols = None
+                    if model_name == "mlp":
+                        for name, transformer, cols in preprocessor.transformers_:
+                            if name == "cat":
+                                one_hot_base_cols = [str(c) for c in cols]
+                                break
                     try:
                         importance = compute_shap_importance(
-                            model, model_name, X_sample, feature_names
+                            model,
+                            model_name,
+                            X_sample,
+                            feature_names,
+                            one_hot_base_cols=one_hot_base_cols,
                         )
                         top_list = top_k_features(importance, k=10)
                         shap_top_k[scenario] = top_list
