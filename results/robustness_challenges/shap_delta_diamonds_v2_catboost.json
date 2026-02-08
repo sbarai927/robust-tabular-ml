@@ -1,48 +1,48 @@
 {
   "clean_top_k": [
-    "Unnamed: 0",
     "carat_weight",
     "color",
     "clarity",
-    "meas_length",
-    "meas_width",
     "meas_depth",
+    "meas_width",
+    "meas_length",
+    "cut",
+    "fancy_color_dominant_color",
     "lab",
-    "fancy_color_intensity",
-    "depth_percent"
+    "fancy_color_intensity"
   ],
   "comparisons": {
     "missingness": {
       "top_k": [
-        "Unnamed: 0",
         "carat_weight",
         "color",
-        "meas_depth",
         "clarity",
         "meas_width",
         "lab",
-        "depth_percent",
+        "fancy_color_dominant_color",
+        "cut",
+        "meas_length",
         "fluor_intensity",
-        "fancy_color_dominant_color"
+        "table_percent"
       ],
       "overlap_count": 8,
       "jaccard": 0.6666666666666666
     },
     "high_cardinality": {
       "top_k": [
-        "Unnamed: 0",
         "carat_weight",
         "color",
         "clarity",
-        "high_card_1",
-        "meas_depth",
-        "meas_length",
         "meas_width",
+        "meas_length",
+        "meas_depth",
         "lab",
-        "depth_percent"
+        "fancy_color_dominant_color",
+        "cut",
+        "fancy_color_intensity"
       ],
-      "overlap_count": 9,
-      "jaccard": 0.8181818181818182
+      "overlap_count": 10,
+      "jaccard": 1.0
     }
   }
 }

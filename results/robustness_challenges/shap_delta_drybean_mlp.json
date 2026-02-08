@@ -9,24 +9,40 @@
     "V18",
     "V14",
     "V1",
-    "V8"
+    "V22"
   ],
   "comparisons": {
     "missingness": {
       "top_k": [
         "V21",
         "V17",
+        "V5",
         "V6",
         "V20",
-        "V5",
-        "V19",
         "V18",
         "V14",
+        "V19",
         "V1",
-        "V8"
+        "V22"
       ],
       "overlap_count": 10,
       "jaccard": 1.0
+    },
+    "high_cardinality": {
+      "top_k": [
+        "high_card_0",
+        "high_card_1",
+        "V21",
+        "V5",
+        "V20",
+        "V19",
+        "V17",
+        "V18",
+        "V14",
+        "V6"
+      ],
+      "overlap_count": 8,
+      "jaccard": 0.6666666666666666
     }
   }
 }

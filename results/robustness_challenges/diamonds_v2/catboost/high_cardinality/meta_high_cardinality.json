@@ -1,7 +1,7 @@
 {
-  "train_time_sec": 2.7464797496795654,
-  "model_size_mb": 0.11842823028564453,
-  "timestamp": "2026-02-02 18:10:30",
+  "train_time_sec": 2.8131000995635986,
+  "model_size_mb": 0.11814308166503906,
+  "timestamp": "2026-02-08 15:11:54",
   "params": {
     "iterations": 355,
     "learning_rate": 0.18864949166858644,

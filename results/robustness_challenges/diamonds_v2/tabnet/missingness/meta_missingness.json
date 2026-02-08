@@ -1,7 +1,7 @@
 {
-  "train_time_sec": 25.694703102111816,
-  "model_size_mb": 3.5750226974487305,
-  "timestamp": "2026-02-02 21:32:50",
+  "train_time_sec": 30.335660696029663,
+  "model_size_mb": 3.564364433288574,
+  "timestamp": "2026-02-08 21:19:53",
   "params": {
     "batch_size": 512,
     "virtual_batch_size": 512,

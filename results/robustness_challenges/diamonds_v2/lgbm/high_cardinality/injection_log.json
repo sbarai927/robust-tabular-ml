@@ -1,7 +1,7 @@
 {
   "high_cardinality_base_columns": [
-    "symmetry",
-    "clarity"
+    "cut_quality",
+    "symmetry"
   ],
   "high_cardinality_new_columns": [
     "high_card_0",

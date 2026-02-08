@@ -1,48 +1,48 @@
 {
   "clean_top_k": [
-    "Unnamed: 0",
-    "cut",
-    "girdle_max",
-    "culet_size",
-    "depth_percent",
     "carat_weight",
+    "cut",
+    "meas_length",
+    "color",
+    "depth_percent",
+    "culet_condition",
+    "fluor_color",
     "table_percent",
-    "symmetry",
-    "meas_width",
+    "clarity",
     "meas_depth"
   ],
   "comparisons": {
     "missingness": {
       "top_k": [
-        "Unnamed: 0",
-        "cut",
-        "meas_width",
-        "depth_percent",
         "carat_weight",
-        "culet_size",
-        "table_percent",
-        "girdle_max",
-        "girdle_min",
-        "clarity"
-      ],
-      "overlap_count": 8,
-      "jaccard": 0.6666666666666666
-    },
-    "high_cardinality": {
-      "top_k": [
-        "Unnamed: 0",
-        "high_card_0",
+        "color",
+        "meas_depth",
         "cut",
-        "girdle_max",
-        "symmetry",
-        "table_percent",
         "depth_percent",
-        "carat_weight",
-        "meas_width",
-        "culet_size"
+        "table_percent",
+        "meas_length",
+        "fluor_color",
+        "girdle_max",
+        "culet_condition"
       ],
       "overlap_count": 9,
       "jaccard": 0.8181818181818182
+    },
+    "high_cardinality": {
+      "top_k": [
+        "carat_weight",
+        "high_card_1",
+        "cut",
+        "depth_percent",
+        "color",
+        "table_percent",
+        "polish",
+        "fluor_color",
+        "meas_depth",
+        "girdle_max"
+      ],
+      "overlap_count": 7,
+      "jaccard": 0.5384615384615384
     }
   }
 }

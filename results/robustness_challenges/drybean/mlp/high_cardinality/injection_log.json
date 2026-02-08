@@ -1,7 +1,7 @@
 {
   "high_cardinality_base_columns": [
-    "V20",
-    "V19"
+    "V14",
+    "V18"
   ],
   "high_cardinality_new_columns": [
     "high_card_0",

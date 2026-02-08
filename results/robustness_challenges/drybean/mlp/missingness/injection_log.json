@@ -1,7 +1,7 @@
 {
   "missingness_rate": 0.15,
   "missingness_columns": [
-    "V6",
-    "V8"
+    "V1",
+    "V20"
   ]
 }

@@ -1,7 +1,7 @@
 {
   "high_cardinality_base_columns": [
-    "eye_clean",
-    "color"
+    "girdle_max",
+    "cut_quality"
   ],
   "high_cardinality_new_columns": [
     "high_card_0",

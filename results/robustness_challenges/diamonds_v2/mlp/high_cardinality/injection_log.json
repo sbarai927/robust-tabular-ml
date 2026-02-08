@@ -1,7 +1,7 @@
 {
   "high_cardinality_base_columns": [
-    "girdle_min",
-    "cut"
+    "girdle_max",
+    "cut_quality"
   ],
   "high_cardinality_new_columns": [
     "high_card_0",

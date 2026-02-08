@@ -1,32 +1,48 @@
 {
   "clean_top_k": [
     "carat_weight",
+    "color",
+    "clarity",
+    "cut",
     "meas_length",
-    "cut_Round",
-    "color_E",
-    "Unnamed: 0",
-    "culet_size_N",
-    "clarity_VS1",
-    "color_D",
-    "color_I",
-    "table_percent"
+    "table_percent",
+    "fluor_intensity",
+    "meas_width",
+    "girdle_max",
+    "girdle_min"
   ],
   "comparisons": {
     "missingness": {
       "top_k": [
-        "Unnamed: 0",
-        "carat_weight",
-        "meas_width",
+        "color",
+        "clarity",
+        "cut",
         "meas_length",
-        "lab_HRD",
-        "clarity_SI2",
-        "color_E",
-        "color_D",
-        "cut_Round",
-        "cut_quality_Excellent"
+        "meas_width",
+        "table_percent",
+        "carat_weight",
+        "girdle_min",
+        "meas_depth",
+        "girdle_max"
       ],
-      "overlap_count": 6,
-      "jaccard": 0.42857142857142855
+      "overlap_count": 9,
+      "jaccard": 0.8181818181818182
+    },
+    "high_cardinality": {
+      "top_k": [
+        "cut",
+        "eye_clean",
+        "high_card_0",
+        "clarity",
+        "high_card_1",
+        "girdle_max",
+        "meas_depth",
+        "culet_size",
+        "table_percent",
+        "carat_weight"
+      ],
+      "overlap_count": 5,
+      "jaccard": 0.3333333333333333
     }
   }
 }
