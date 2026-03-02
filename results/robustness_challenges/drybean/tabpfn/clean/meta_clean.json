@@ -1,0 +1,14 @@
+{
+  "train_time_sec": 0.0,
+  "model_size_mb": 28.088348388671875,
+  "timestamp": "2026-02-18 22:56:21",
+  "params": {
+    "model": "tabpfn",
+    "config": "default",
+    "device": "cpu"
+  },
+  "scenario": "clean",
+  "reuse_hpo_model": true,
+  "eval_subset_n": 50,
+  "eval_total_n": 994
+}

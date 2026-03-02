@@ -1,0 +1,8 @@
+{
+  "model": "apt",
+  "config": "default",
+  "device": "cpu",
+  "tune": false,
+  "process_data": true,
+  "checkpoint": "model_epoch=200_classification_2025.01.13_21:18:53.pt"
+}

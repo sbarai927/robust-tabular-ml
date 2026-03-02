@@ -1,0 +1,18 @@
+{
+  "Accuracy": 0.74,
+  "F1": 0.7390606182256123,
+  "train_time_sec": 0.0,
+  "model_size_mb": 101.86618995666504,
+  "timestamp": "2026-02-18 23:05:35",
+  "params": {
+    "model": "apt",
+    "config": "default",
+    "device": "cpu"
+  },
+  "scenario": "missingness",
+  "reuse_hpo_model": true,
+  "eval_subset_n": 50,
+  "eval_total_n": 994,
+  "model": "apt",
+  "dataset": "drybean"
+}

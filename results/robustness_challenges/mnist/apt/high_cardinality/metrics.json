@@ -1,0 +1,18 @@
+{
+  "Accuracy": 0.92,
+  "F1": 0.9237387612387613,
+  "train_time_sec": 0.0,
+  "model_size_mb": 102.01615333557129,
+  "timestamp": "2026-02-18 23:19:00",
+  "params": {
+    "model": "apt",
+    "config": "default",
+    "device": "cpu"
+  },
+  "scenario": "high_cardinality",
+  "reuse_hpo_model": true,
+  "eval_subset_n": 50,
+  "eval_total_n": 360,
+  "model": "apt",
+  "dataset": "mnist"
+}

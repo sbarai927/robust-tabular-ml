@@ -1,0 +1,10 @@
+{
+  "high_cardinality_base_columns": [
+    "gender",
+    "StreamingMovies"
+  ],
+  "high_cardinality_new_columns": [],
+  "high_cardinality_unique_values": 150,
+  "mode": "overwrite",
+  "skipped_no_categorical": false
+}

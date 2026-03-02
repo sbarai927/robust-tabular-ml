@@ -1,0 +1,29 @@
+{
+  "spearman": 0.6820934329085598,
+  "top_k": 10,
+  "jaccard": 0.42857142857142855,
+  "clean_top": [
+    "Age",
+    "Embarked_S",
+    "Name_Allen, Miss. Elisabeth Walton",
+    "PassengerId",
+    "Pclass",
+    "Sex_female",
+    "Ticket_110152",
+    "Ticket_113803",
+    "Ticket_PC 17756",
+    "Ticket_SOTON/O.Q. 392078"
+  ],
+  "shift_top": [
+    "Age",
+    "Cabin_C123",
+    "Cabin_C23 C25 C27",
+    "PassengerId",
+    "Pclass",
+    "Sex_female",
+    "SibSp",
+    "Ticket_110152",
+    "Ticket_113803",
+    "Ticket_PP 9549"
+  ]
+}

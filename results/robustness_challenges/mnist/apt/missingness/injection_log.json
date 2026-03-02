@@ -1,0 +1,17 @@
+{
+  "missingness_rate": 0.15,
+  "missingness_columns": [
+    "pixel_5_7",
+    "pixel_5_3",
+    "pixel_7_1",
+    "pixel_1_6",
+    "pixel_3_5",
+    "pixel_3_2",
+    "pixel_6_2",
+    "pixel_0_2",
+    "pixel_5_4",
+    "pixel_0_6",
+    "pixel_4_5",
+    "pixel_5_1"
+  ]
+}

@@ -1,0 +1,3 @@
+{
+  "error": "TabPFNClassifier.fit() got an unexpected keyword argument 'categorical_features_indices'"
+}

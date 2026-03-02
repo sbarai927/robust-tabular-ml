@@ -1,0 +1,14 @@
+{
+  "train_time_sec": 0.0,
+  "model_size_mb": 102.01615333557129,
+  "timestamp": "2026-02-18 23:18:56",
+  "params": {
+    "model": "apt",
+    "config": "default",
+    "device": "cpu"
+  },
+  "scenario": "missingness",
+  "reuse_hpo_model": true,
+  "eval_subset_n": 50,
+  "eval_total_n": 360
+}

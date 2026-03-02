@@ -1,0 +1,15 @@
+{
+  "clean_top_k": [],
+  "comparisons": {
+    "missingness": {
+      "top_k": [],
+      "overlap_count": 0,
+      "jaccard": 0.0
+    },
+    "high_cardinality": {
+      "top_k": [],
+      "overlap_count": 0,
+      "jaccard": 0.0
+    }
+  }
+}

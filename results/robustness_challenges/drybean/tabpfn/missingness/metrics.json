@@ -1,0 +1,18 @@
+{
+  "Accuracy": 0.46,
+  "F1": 0.3150684931506849,
+  "train_time_sec": 0.0,
+  "model_size_mb": 32.16485118865967,
+  "timestamp": "2026-02-18 23:00:45",
+  "params": {
+    "model": "tabpfn",
+    "config": "default",
+    "device": "cpu"
+  },
+  "scenario": "missingness",
+  "reuse_hpo_model": true,
+  "eval_subset_n": 50,
+  "eval_total_n": 994,
+  "model": "tabpfn",
+  "dataset": "drybean"
+}
