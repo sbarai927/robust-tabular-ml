@@ -80,6 +80,16 @@ try:
 except Exception:
     TabNetClassifier = TabNetRegressor = None
 
+try:
+    from tabpfn import TabPFNClassifier
+except Exception:
+    TabPFNClassifier = None
+
+try:
+    from apt.model import APTClassifier, APTRegressor
+except Exception:
+    APTClassifier = APTRegressor = None
+
 RANDOM_STATE = 42
 DEFAULT_TRIALS = int(os.getenv("HPO_TRIALS", "30"))
 DEFAULT_TIMEOUT = int(os.getenv("HPO_TIMEOUT", "0"))  # seconds per study; 0 disables
@@ -129,6 +139,37 @@ def build_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
     if cat_cols:
         transformers.append(("cat", OneHotEncoder(handle_unknown="ignore"), cat_cols))
     return ColumnTransformer(transformers)
+
+
+def build_tabpfn_inputs(
+    X_train: pd.DataFrame, X_valid: pd.DataFrame
+) -> Tuple[np.ndarray, np.ndarray, list[int]]:
+    cat_cols = [c for c in X_train.columns if X_train[c].dtype == object]
+    num_cols = [c for c in X_train.columns if c not in cat_cols]
+    categories = {
+        col: pd.Categorical(X_train[col].astype(str).fillna("missing")).categories
+        for col in cat_cols
+    }
+
+    def encode(df: pd.DataFrame) -> np.ndarray:
+        num = df[num_cols].astype(float).to_numpy() if num_cols else np.empty((len(df), 0))
+        if cat_cols:
+            cat_arrays = []
+            for col in cat_cols:
+                cat = pd.Categorical(
+                    df[col].astype(str).fillna("missing"),
+                    categories=categories[col],
+                )
+                cat_arrays.append(cat.codes.reshape(-1, 1))
+            cat_mat = np.hstack(cat_arrays)
+        else:
+            cat_mat = np.empty((len(df), 0))
+        return np.hstack([num, cat_mat]).astype(np.float32)
+
+    X_train_proc = encode(X_train)
+    X_valid_proc = encode(X_valid)
+    cat_indices = list(range(len(num_cols), len(num_cols) + len(cat_cols)))
+    return X_train_proc, X_valid_proc, cat_indices
 
 
 def regression_metrics(y_true, y_pred) -> Dict[str, float]:
@@ -632,18 +673,115 @@ def train_model(
     overwrite: bool = False,
 ) -> Dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
-    preprocessor = build_preprocessor(X_train)
-    X_train_proc = preprocessor.fit_transform(X_train)
-    X_valid_proc = preprocessor.transform(X_valid)
-    feature_names = getattr(preprocessor, "get_feature_names_out", lambda: None)()
-    if feature_names is None:
+    tabpfn_cat_indices: list[int] = []
+    if model_name == "tabpfn":
+        X_train_proc, X_valid_proc, tabpfn_cat_indices = build_tabpfn_inputs(
+            X_train, X_valid
+        )
         feature_names = [f"f{i}" for i in range(X_train_proc.shape[1])]
     else:
-        feature_names = list(feature_names)
-    # Ensure dense arrays for estimators that dislike sparse
-    if hasattr(X_train_proc, "toarray"):
-        X_train_proc = X_train_proc.toarray()
-        X_valid_proc = X_valid_proc.toarray()
+        preprocessor = build_preprocessor(X_train)
+        X_train_proc = preprocessor.fit_transform(X_train)
+        X_valid_proc = preprocessor.transform(X_valid)
+        feature_names = getattr(preprocessor, "get_feature_names_out", lambda: None)()
+        if feature_names is None:
+            feature_names = [f"f{i}" for i in range(X_train_proc.shape[1])]
+        else:
+            feature_names = list(feature_names)
+        # Ensure dense arrays for estimators that dislike sparse
+        if hasattr(X_train_proc, "toarray"):
+            X_train_proc = X_train_proc.toarray()
+            X_valid_proc = X_valid_proc.toarray()
+
+    if model_name in {"tabpfn", "apt"}:
+        start = time.time()
+        np.random.seed(RANDOM_STATE)
+        model = None
+        params: Dict[str, Any] = {"model": model_name, "config": "default"}
+        if model_name == "tabpfn":
+            if cfg.task != "classification":
+                raise RuntimeError("TabPFN supports classification only.")
+            if TabPFNClassifier is None:
+                raise RuntimeError("tabpfn not installed.")
+            device = "cuda" if _has_torch() and torch.cuda.is_available() else "cpu"
+            params.update(
+                {
+                    "device": device,
+                    "random_state": RANDOM_STATE,
+                    "ignore_pretraining_limits": True,
+                    "categorical_features_indices": tabpfn_cat_indices or None,
+                }
+            )
+            try:
+                model = TabPFNClassifier(
+                    device=device,
+                    random_state=RANDOM_STATE,
+                    ignore_pretraining_limits=True,
+                    categorical_features_indices=tabpfn_cat_indices or None,
+                )
+            except TypeError:
+                model = TabPFNClassifier(device=device)
+            le = LabelEncoder()
+            y_train_enc = le.fit_transform(np.asarray(y_train))
+            y_valid_enc = le.transform(np.asarray(y_valid))
+            model.fit(X_train_proc, y_train_enc)
+            preds_enc = model.predict(X_valid_proc)
+            preds = le.inverse_transform(np.asarray(preds_enc))
+            metrics = classification_metrics(y_valid, preds, multiclass=cfg.is_multiclass)
+            best_value = metrics["F1"]
+        else:
+            device = "cuda" if _has_torch() and torch.cuda.is_available() else "cpu"
+            params.update(
+                {
+                    "device": device,
+                    "tune": False,
+                    "process_data": True,
+                    "checkpoint": "model_epoch=200_classification_2025.01.13_21:18:53.pt",
+                }
+            )
+            if cfg.task != "classification":
+                raise RuntimeError("APT regression is not supported by the current repository.")
+            if APTClassifier is None:
+                raise RuntimeError("APT not installed.")
+            model = APTClassifier(device=device)
+            X_train_proc = np.asarray(X_train_proc, dtype=np.float32)
+            X_valid_proc = np.asarray(X_valid_proc, dtype=np.float32)
+            le = LabelEncoder()
+            y_train_enc = le.fit_transform(np.asarray(y_train))
+            y_valid_enc = le.transform(np.asarray(y_valid))
+            model.fit(X_train_proc, y_train_enc, tune=False, process_data=True)
+            preds = model.predict(X_valid_proc)
+            metrics = classification_metrics(y_valid_enc, preds, multiclass=cfg.is_multiclass)
+            best_value = metrics["F1"]
+
+        elapsed = time.time() - start
+        metrics["best_value"] = best_value
+        metrics["elapsed_sec"] = elapsed
+        model_path = out_dir / "best_model.pkl"
+        if model_name == "apt":
+            if not _has_torch():
+                raise RuntimeError("torch required to save APT model.")
+            torch.save(
+                {
+                    "state_dict": model.state_dict(),
+                    "x_train": getattr(model, "x_train", None),
+                    "y_train": getattr(model, "y_train", None),
+                    "x_encoder": getattr(model, "x_encoder", None),
+                    "y_encoder": getattr(model, "y_encoder", None),
+                    "feature_perm": getattr(model, "feature_perm", None),
+                },
+                model_path,
+            )
+        else:
+            joblib.dump(model, model_path)
+        metrics["model_size_mb"] = model_path.stat().st_size / (1024 * 1024)
+        with open(out_dir / "best_params.json", "w") as f:
+            json.dump(params, f, indent=2)
+        pd.DataFrame([metrics]).to_csv(out_dir / "metrics.csv", index=False)
+        pd.DataFrame([params]).to_csv(out_dir / "trials.csv", index=False)
+        joblib.dump({"baseline": True, "params": params}, out_dir / "study.pkl")
+        print(f"✔ Saved baseline results for {cfg.name} / {model_name} to {out_dir}")
+        return metrics
 
     sampler = optuna.samplers.TPESampler(seed=RANDOM_STATE)
     objective, build_model, suggest_params = objective_factory(
@@ -790,7 +928,17 @@ def main():
         DatasetConfig("diamonds_v3", Path("data/diamonds_v3.csv"), "total_sales_price", "regression"),
         DatasetConfig("mnist", Path("data/mnist_tabular_digits.csv"), "label", "classification", True),
     ]
-    models = ["rf", "lgbm", "catboost", "xgboost", "mlp", "tabnet", "fttransformer"]
+    models = [
+        "rf",
+        "lgbm",
+        "catboost",
+        "xgboost",
+        "mlp",
+        "tabnet",
+        "fttransformer",
+        "tabpfn",
+        "apt",
+    ]
     results_root = Path("results/hpo")
     for cfg in datasets:
         if dataset_filter and cfg.name not in dataset_filter:
@@ -807,10 +955,18 @@ def main():
                 (model_name == "catboost" and CatBoostClassifier is None) or
                 (model_name == "xgboost" and xgb is None) or
                 (model_name == "tabnet" and TabNetClassifier is None) or
+                (model_name == "tabpfn" and TabPFNClassifier is None) or
+                (model_name == "apt" and APTClassifier is None) or
                 (model_name in {"fttransformer", "saint"} and not _has_torch())
             )
             if deps_missing:
                 print(f"⚠️ Skipping {model_name} for {cfg.name}: dependency not installed.")
+                continue
+            if model_name == "tabpfn" and cfg.task != "classification":
+                print(f"⚠️ Skipping {model_name} for {cfg.name}: classification only.")
+                continue
+            if model_name == "apt" and cfg.task != "classification":
+                print(f"⚠️ Skipping {model_name} for {cfg.name}: regression not supported.")
                 continue
             out_dir = results_root / cfg.name / model_name
             metrics_path = out_dir / "metrics.csv"

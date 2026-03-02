@@ -74,6 +74,16 @@ try:
 except Exception:
     TabNetClassifier = TabNetRegressor = None
 
+try:
+    from tabpfn import TabPFNClassifier
+except Exception:
+    TabPFNClassifier = None
+
+try:
+    from apt.model import APTClassifier
+except Exception:
+    APTClassifier = None
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -151,7 +161,7 @@ DATASETS: Dict[str, DatasetConfig] = {
     ),
 }
 
-MODELS = {"rf", "lgbm", "catboost", "xgboost", "mlp", "tabnet"}
+MODELS = {"rf", "lgbm", "catboost", "xgboost", "mlp", "tabnet", "tabpfn", "apt"}
 SCENARIOS = ("clean", "missingness", "high_cardinality")
 
 
@@ -211,7 +221,7 @@ def build_preprocessor(X: pd.DataFrame, model_name: str) -> ColumnTransformer:
     cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
     num_cols = [c for c in X.columns if c not in cat_cols]
 
-    if model_name == "mlp":
+    if model_name in {"mlp", "apt"}:
         num_pipeline = [
             ("imputer", SimpleImputer(strategy="mean")),
             ("scaler", StandardScaler()),
@@ -235,6 +245,55 @@ def build_preprocessor(X: pd.DataFrame, model_name: str) -> ColumnTransformer:
     if cat_cols:
         transformers.append(("cat", Pipeline(cat_pipeline), cat_cols))
     return ColumnTransformer(transformers)
+
+
+def build_tabpfn_inputs(
+    X_train: pd.DataFrame,
+    X_test: pd.DataFrame,
+    num_means: Dict[str, float] | None = None,
+    categories: Dict[str, pd.Index] | None = None,
+) -> Tuple[np.ndarray, np.ndarray, List[int], Dict[str, float], Dict[str, pd.Index]]:
+    cat_cols = X_train.select_dtypes(include=["object", "category"]).columns.tolist()
+    num_cols = [c for c in X_train.columns if c not in cat_cols]
+    if num_means is None:
+        num_means = {c: float(X_train[c].mean()) for c in num_cols}
+    if categories is None:
+        categories = {
+            col: pd.Categorical(X_train[col].astype(str).fillna("missing")).categories
+            for col in cat_cols
+        }
+    effective_num_means = {c: float(num_means.get(c, X_train[c].mean())) for c in num_cols}
+    effective_categories = {
+        col: categories.get(
+            col,
+            pd.Categorical(X_train[col].astype(str).fillna("missing")).categories,
+        )
+        for col in cat_cols
+    }
+
+    def encode(df: pd.DataFrame) -> np.ndarray:
+        num = (
+            df[num_cols].astype(float).fillna(pd.Series(effective_num_means)).to_numpy()
+            if num_cols
+            else np.empty((len(df), 0))
+        )
+        if cat_cols:
+            cat_arrays = []
+            for col in cat_cols:
+                cat = pd.Categorical(
+                    df[col].astype(str).fillna("missing"),
+                    categories=effective_categories[col],
+                )
+                cat_arrays.append(cat.codes.reshape(-1, 1))
+            cat_mat = np.hstack(cat_arrays)
+        else:
+            cat_mat = np.empty((len(df), 0))
+        return np.hstack([num, cat_mat]).astype(np.float32)
+
+    X_train_proc = encode(X_train)
+    X_test_proc = encode(X_test)
+    cat_indices = list(range(len(num_cols), len(num_cols) + len(cat_cols)))
+    return X_train_proc, X_test_proc, cat_indices, num_means, categories
 
 
 def classification_metrics(y_true, y_pred, multiclass=False) -> Dict[str, float]:
@@ -355,6 +414,24 @@ def build_model(cfg: DatasetConfig, model_name: str, params: Dict[str, object]):
         params.setdefault("mask_type", "entmax")
         base = TabNetRegressor if is_reg else TabNetClassifier
         return base(**params)
+    if model_name == "tabpfn":
+        if TabPFNClassifier is None:
+            raise RuntimeError("tabpfn not installed")
+        if is_reg:
+            raise RuntimeError("tabpfn supports classification only")
+        device = "cuda" if torch is not None and torch.cuda.is_available() else "cpu"
+        return TabPFNClassifier(
+            device=device,
+            random_state=RANDOM_STATE,
+            ignore_pretraining_limits=True,
+        )
+    if model_name == "apt":
+        if APTClassifier is None:
+            raise RuntimeError("APT not installed")
+        if is_reg:
+            raise RuntimeError("APT regression is not supported")
+        device = "cuda" if torch is not None and torch.cuda.is_available() else "cpu"
+        return APTClassifier(device=device)
     raise ValueError(f"Unsupported model {model_name}")
 
 
@@ -370,15 +447,22 @@ def fit_and_evaluate(
     out_dir: Path,
 ) -> Dict[str, object]:
     # Preprocess data for the chosen model.
-    preprocessor = build_preprocessor(X_train, model_name)
-    X_train_proc = preprocessor.fit_transform(X_train)
-    X_test_proc = preprocessor.transform(X_test)
-    if hasattr(X_train_proc, "toarray"):
-        X_train_proc = X_train_proc.toarray()
-        X_test_proc = X_test_proc.toarray()
-    if model_name == "tabnet":
-        X_train_proc = np.asarray(X_train_proc, dtype=np.float32)
-        X_test_proc = np.asarray(X_test_proc, dtype=np.float32)
+    tabpfn_cat_indices: List[int] = []
+    if model_name == "tabpfn":
+        X_train_proc, X_test_proc, tabpfn_cat_indices, _, _ = build_tabpfn_inputs(
+            X_train, X_test
+        )
+        preprocessor = None
+    else:
+        preprocessor = build_preprocessor(X_train, model_name)
+        X_train_proc = preprocessor.fit_transform(X_train)
+        X_test_proc = preprocessor.transform(X_test)
+        if hasattr(X_train_proc, "toarray"):
+            X_train_proc = X_train_proc.toarray()
+            X_test_proc = X_test_proc.toarray()
+        if model_name in {"tabnet", "apt"}:
+            X_train_proc = np.asarray(X_train_proc, dtype=np.float32)
+            X_test_proc = np.asarray(X_test_proc, dtype=np.float32)
 
     # Train model with best parameters and track time.
     start = time.time()
@@ -422,6 +506,33 @@ def fit_and_evaluate(
             )
             preds = model.predict(X_test_proc)
             y_eval = y_test
+    elif model_name == "tabpfn":
+        if cfg.task == "regression":
+            raise RuntimeError("tabpfn supports classification only")
+        device = "cuda" if torch is not None and torch.cuda.is_available() else "cpu"
+        model = TabPFNClassifier(
+            device=device,
+            random_state=RANDOM_STATE,
+            ignore_pretraining_limits=True,
+            categorical_features_indices=tabpfn_cat_indices or None,
+            fit_mode="low_memory",
+        )
+        le = LabelEncoder()
+        y_train_enc = le.fit_transform(np.asarray(y_train))
+        y_test_enc = le.transform(np.asarray(y_test))
+        model.fit(X_train_proc, y_train_enc)
+        preds = model.predict(X_test_proc)
+        y_eval = y_test_enc
+    elif model_name == "apt":
+        if cfg.task == "regression":
+            raise RuntimeError("APT regression is not supported")
+        model = build_model(cfg, model_name, params.copy())
+        le = LabelEncoder()
+        y_train_enc = le.fit_transform(np.asarray(y_train))
+        y_test_enc = le.transform(np.asarray(y_test))
+        model.fit(X_train_proc, y_train_enc, tune=False, process_data=True)
+        preds = model.predict(X_test_proc)
+        y_eval = y_test_enc
     elif model_name == "xgboost" and cfg.task == "classification":
         model = build_model(cfg, model_name, params.copy())
         le = LabelEncoder()
@@ -446,7 +557,22 @@ def fit_and_evaluate(
     # Save model and compute size.
     out_dir.mkdir(parents=True, exist_ok=True)
     model_path = out_dir / "best_model.pkl"
-    joblib.dump(model, model_path)
+    if model_name == "apt":
+        if torch is None:
+            raise RuntimeError("torch required to save APT model")
+        torch.save(
+            {
+                "state_dict": model.state_dict(),
+                "x_train": getattr(model, "x_train", None),
+                "y_train": getattr(model, "y_train", None),
+                "x_encoder": getattr(model, "x_encoder", None),
+                "y_encoder": getattr(model, "y_encoder", None),
+                "feature_perm": getattr(model, "feature_perm", None),
+            },
+            model_path,
+        )
+    else:
+        joblib.dump(model, model_path)
     model_size_mb = model_path.stat().st_size / (1024 * 1024)
 
     # Save timing and size metadata.
@@ -501,6 +627,8 @@ def compute_shap_importance(
     feature_names: List[str],
     one_hot_base_cols: List[str] | None = None,
     max_kernel_samples: int = 100,
+    kernel_nsamples: int | None = None,
+    background_size: int | None = None,
 ) -> Dict[str, float]:
     # Compute mean absolute SHAP values for a small sample.
     if shap is None:
@@ -539,12 +667,17 @@ def compute_shap_importance(
         predict_fn = model.predict_proba if hasattr(model, "predict_proba") else model.predict
         X_sample = np.asarray(X_sample, dtype=np.float32)
     else:
-        predict_fn = model.predict_proba if hasattr(model, "predict_proba") else model.predict
+        if model_name in {"tabpfn", "apt"}:
+            predict_fn = model.predict
+        else:
+            predict_fn = model.predict_proba if hasattr(model, "predict_proba") else model.predict
     sample_n = min(max_kernel_samples, X_sample.shape[0])
-    background = shap.utils.sample(X_sample, min(50, sample_n))
+    bg_size = background_size if background_size is not None else (1 if model_name in {"tabpfn", "apt"} else 50)
+    background = shap.utils.sample(X_sample, min(bg_size, sample_n))
     explainer = shap.KernelExplainer(predict_fn, background)
+    nsamples = kernel_nsamples if kernel_nsamples is not None else (1 if model_name in {"tabpfn", "apt"} else 30)
     shap_values = explainer.shap_values(
-        X_sample[:sample_n], nsamples=30, l1_reg="num_features(10)"
+        X_sample[:sample_n], nsamples=nsamples, l1_reg="num_features(10)"
     )
     if isinstance(shap_values, list):
         values = np.mean([np.abs(v) for v in shap_values], axis=0)
@@ -559,6 +692,29 @@ def compute_shap_importance(
     if model_name == "mlp" and one_hot_base_cols:
         return _collapse_one_hot_importance(importance, one_hot_base_cols)
     return importance
+
+
+def load_apt_artifact(model_path: Path):
+    if torch is None:
+        raise RuntimeError("torch not available for APT loading")
+    if APTClassifier is None:
+        raise RuntimeError("APT not installed")
+    payload = torch.load(model_path, map_location="cpu", weights_only=False)
+    model = APTClassifier(device="cpu")
+    state = payload.get("state_dict") if isinstance(payload, dict) else None
+    if state:
+        model.load_state_dict(state)
+    for key in ["x_train", "y_train", "x_encoder", "y_encoder", "feature_perm"]:
+        if isinstance(payload, dict) and key in payload:
+            setattr(model, key, payload[key])
+    model.eval()
+    return model
+
+
+def tabpfn_feature_names(X: pd.DataFrame) -> List[str]:
+    cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
+    num_cols = [c for c in X.columns if c not in cat_cols]
+    return [str(c) for c in num_cols + cat_cols]
 
 
 def top_k_features(importance: Dict[str, float], k: int = 10) -> List[str]:
@@ -608,6 +764,23 @@ def main() -> None:
         action="store_true",
         help="Recompute SHAP top-k/delta using existing models without retraining.",
     )
+    parser.add_argument(
+        "--allow-tabpfn-shap",
+        action="store_true",
+        help="Enable SHAP for TabPFN/APT (slow).",
+    )
+    parser.add_argument("--tabpfn-shap-samples", type=int, default=50)
+    parser.add_argument("--tabpfn-shap-nsamples", type=int, default=5)
+    parser.add_argument("--tabpfn-shap-background", type=int, default=10)
+    parser.add_argument(
+        "--tabpfn-importance",
+        choices=["none", "perm", "shap"],
+        default="none",
+        help="Importance method for TabPFN/APT (perm is faster than SHAP).",
+    )
+    parser.add_argument("--tabpfn-perm-samples", type=int, default=50)
+    parser.add_argument("--tabpfn-perm-repeats", type=int, default=2)
+    parser.add_argument("--tabpfn-perm-features", type=int, default=50)
     args = parser.parse_args()
 
     datasets = [d for d in args.datasets if d in DATASETS]
@@ -622,6 +795,15 @@ def main() -> None:
         rng = np.random.default_rng(RANDOM_STATE)
 
         for model_name in models:
+            if cfg.task == "regression" and model_name in {"tabpfn", "apt"}:
+                print(f"⚠️ Skipping {cfg.name}/{model_name}: regression not supported.")
+                continue
+            if model_name == "tabpfn" and TabPFNClassifier is None:
+                print(f"⚠️ Skipping {cfg.name}/{model_name}: tabpfn not installed.")
+                continue
+            if model_name == "apt" and APTClassifier is None:
+                print(f"⚠️ Skipping {cfg.name}/{model_name}: apt not installed.")
+                continue
             params = None
             if not args.shap_only:
                 try:
@@ -635,6 +817,32 @@ def main() -> None:
             shap_clean_top = None
             shap_comparisons: Dict[str, List[str]] = {}
             shap_top_k: Dict[str, List[str]] = {}
+            cached_model = None
+            cached_model_path = None
+            cached_preprocessor = None
+            tabpfn_num_means = None
+            tabpfn_categories = None
+            if not args.shap_only and model_name in {"tabpfn", "apt"}:
+                cached_model_path = Path("results/hpo") / cfg.name / model_name / "best_model.pkl"
+                if not cached_model_path.exists():
+                    print(f"⚠️ Missing HPO model for {cfg.name}/{model_name}: {cached_model_path}")
+                    continue
+                try:
+                    cached_model = (
+                        load_apt_artifact(cached_model_path)
+                        if model_name == "apt"
+                        else joblib.load(cached_model_path)
+                    )
+                    if model_name == "apt":
+                        cached_preprocessor = build_preprocessor(X_train, model_name)
+                        cached_preprocessor.fit(X_train)
+                    if model_name == "tabpfn":
+                        _, _, _, tabpfn_num_means, tabpfn_categories = build_tabpfn_inputs(
+                            X_train, X_train
+                        )
+                except Exception as exc:
+                    print(f"⚠️ Failed to load HPO model for {cfg.name}/{model_name}: {exc}")
+                    continue
 
             for scenario in SCENARIOS:
                 scenario_dir = model_output_dir / scenario
@@ -666,22 +874,48 @@ def main() -> None:
                     cat_cols = X_train.select_dtypes(include=["object", "category"]).columns.tolist()
                     base_cols = cat_cols if cat_cols else X_train.columns.tolist()
                     selected = rng.choice(base_cols, size=min(2, len(base_cols)), replace=False)
-                    X_train_s, new_cols = add_high_cardinality_features(
-                        X_train, base_columns=selected, num_cols=2, n_unique=150, rng=rng
-                    )
-                    X_test_s, _ = add_high_cardinality_features(
-                        X_test, base_columns=selected, num_cols=2, n_unique=150, rng=rng
-                    )
-                    with open(scenario_dir / "injection_log.json", "w") as f:
-                        json.dump(
-                            {
-                                "high_cardinality_base_columns": [str(c) for c in selected],
-                                "high_cardinality_new_columns": new_cols,
-                                "high_cardinality_unique_values": 150,
-                            },
-                            f,
-                            indent=2,
+                    if model_name in {"tabpfn", "apt"}:
+                        X_train_s = X_train.copy()
+                        X_test_s = X_test.copy()
+                        if not cat_cols and model_name == "apt":
+                            selected = []
+                        for idx, col in enumerate(selected):
+                            values = [f"hc_{idx}_{i}" for i in range(150)]
+                            X_train_s[col] = X_train_s[col].astype(str) + "_" + rng.choice(
+                                values, size=len(X_train_s), replace=True
+                            )
+                            X_test_s[col] = X_test_s[col].astype(str) + "_" + rng.choice(
+                                values, size=len(X_test_s), replace=True
+                            )
+                        with open(scenario_dir / "injection_log.json", "w") as f:
+                            json.dump(
+                                {
+                                    "high_cardinality_base_columns": [str(c) for c in selected],
+                                    "high_cardinality_new_columns": [],
+                                    "high_cardinality_unique_values": 150,
+                                    "mode": "overwrite",
+                                    "skipped_no_categorical": not cat_cols and model_name == "apt",
+                                },
+                                f,
+                                indent=2,
+                            )
+                    else:
+                        X_train_s, new_cols = add_high_cardinality_features(
+                            X_train, base_columns=selected, num_cols=2, n_unique=150, rng=rng
                         )
+                        X_test_s, _ = add_high_cardinality_features(
+                            X_test, base_columns=selected, num_cols=2, n_unique=150, rng=rng
+                        )
+                        with open(scenario_dir / "injection_log.json", "w") as f:
+                            json.dump(
+                                {
+                                    "high_cardinality_base_columns": [str(c) for c in selected],
+                                    "high_cardinality_new_columns": new_cols,
+                                    "high_cardinality_unique_values": 150,
+                                },
+                                f,
+                                indent=2,
+                            )
 
                 if args.shap_only:
                     model_path = scenario_dir / "best_model.pkl"
@@ -689,14 +923,24 @@ def main() -> None:
                         print(f"⚠️ Missing model for SHAP: {model_path}")
                         continue
                     try:
-                        preprocessor = build_preprocessor(X_train_s, model_name)
-                        X_train_proc = preprocessor.fit_transform(X_train_s)
-                        X_test_proc = preprocessor.transform(X_test_s)
-                        if hasattr(X_train_proc, "toarray"):
-                            X_test_proc = X_test_proc.toarray()
-                        if model_name == "tabnet":
-                            X_test_proc = np.asarray(X_test_proc, dtype=np.float32)
-                        model = joblib.load(model_path)
+                        if model_name == "tabpfn":
+                            X_train_proc, X_test_proc, _, _, _ = build_tabpfn_inputs(
+                                X_train_s, X_test_s
+                            )
+                            preprocessor = None
+                            model = joblib.load(model_path)
+                        else:
+                            preprocessor = build_preprocessor(X_train_s, model_name)
+                            X_train_proc = preprocessor.fit_transform(X_train_s)
+                            X_test_proc = preprocessor.transform(X_test_s)
+                            if hasattr(X_train_proc, "toarray"):
+                                X_test_proc = X_test_proc.toarray()
+                            if model_name in {"tabnet", "apt"}:
+                                X_test_proc = np.asarray(X_test_proc, dtype=np.float32)
+                            if model_name == "apt":
+                                model = load_apt_artifact(model_path)
+                            else:
+                                model = joblib.load(model_path)
                         # Align MLP input shape with expected model input if schema drifted.
                         if model_name == "mlp" and hasattr(model, "coefs_"):
                             expected = model.coefs_[0].shape[0]
@@ -711,17 +955,88 @@ def main() -> None:
                         continue
                 else:
                     try:
-                        metrics, model, preprocessor, X_test_proc = fit_and_evaluate(
-                            cfg,
-                            model_name,
-                            X_train_s,
-                            X_test_s,
-                            y_train,
-                            y_test,
-                            params,
-                            scenario,
-                            scenario_dir,
-                        )
+                        if model_name in {"tabpfn", "apt"} and cached_model is not None:
+                            model = cached_model
+                            if model_name == "tabpfn":
+                                X_train_proc, X_test_proc, _, _, _ = build_tabpfn_inputs(
+                                    X_train_s,
+                                    X_test_s,
+                                    num_means=tabpfn_num_means,
+                                    categories=tabpfn_categories,
+                                )
+                                preprocessor = None
+                            else:
+                                preprocessor = cached_preprocessor
+                                X_test_proc = preprocessor.transform(X_test_s)
+                                if hasattr(X_test_proc, "toarray"):
+                                    X_test_proc = X_test_proc.toarray()
+                                if model_name == "apt":
+                                    X_test_proc = np.asarray(X_test_proc, dtype=np.float32)
+                            eval_idx = None
+                            if model_name in {"tabpfn", "apt"} and len(X_test_proc) > 50:
+                                eval_idx = rng.choice(len(X_test_proc), size=50, replace=False)
+                                X_eval = X_test_proc[eval_idx]
+                            else:
+                                X_eval = X_test_proc
+                            preds = cached_model.predict(X_eval)
+                            y_eval = y_test
+                            if cfg.task == "classification":
+                                le = LabelEncoder()
+                                y_eval = le.fit_transform(np.asarray(y_test))
+                            if eval_idx is not None:
+                                y_eval = np.asarray(y_eval)[eval_idx]
+                            if cfg.task == "regression":
+                                metrics = regression_metrics(y_eval, preds)
+                            else:
+                                metrics = classification_metrics(
+                                    y_eval, preds, multiclass=cfg.is_multiclass
+                                )
+                            scenario_dir.mkdir(parents=True, exist_ok=True)
+                            model_path = scenario_dir / "best_model.pkl"
+                            if not model_path.exists():
+                                if model_name == "apt":
+                                    torch.save(
+                                        {
+                                            "state_dict": cached_model.state_dict(),
+                                            "x_train": getattr(cached_model, "x_train", None),
+                                            "y_train": getattr(cached_model, "y_train", None),
+                                            "x_encoder": getattr(cached_model, "x_encoder", None),
+                                            "y_encoder": getattr(cached_model, "y_encoder", None),
+                                            "feature_perm": getattr(cached_model, "feature_perm", None),
+                                        },
+                                        model_path,
+                                    )
+                                else:
+                                    joblib.dump(cached_model, model_path)
+                            model_size_mb = model_path.stat().st_size / (1024 * 1024)
+                            meta = {
+                                "train_time_sec": 0.0,
+                                "model_size_mb": float(model_size_mb),
+                                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                                "params": params,
+                                "scenario": scenario,
+                                "reuse_hpo_model": True,
+                                "eval_subset_n": None if eval_idx is None else int(len(eval_idx)),
+                                "eval_total_n": int(len(X_test_proc)),
+                            }
+                            with open(scenario_dir / f"meta_{scenario}.json", "w") as f:
+                                json.dump(meta, f, indent=2)
+                            metrics.update(meta)
+                            metrics.update({"scenario": scenario, "model": model_name})
+                        else:
+                            metrics, model, preprocessor, X_test_proc = fit_and_evaluate(
+                                cfg,
+                                model_name,
+                                X_train_s,
+                                X_test_s,
+                                y_train,
+                                y_test,
+                                params,
+                                scenario,
+                                scenario_dir,
+                            )
+                            if scenario == "clean" and model_name in {"tabpfn", "apt"}:
+                                cached_model = model
                         metrics["dataset"] = cfg.name
                         with open(metrics_path, "w") as f:
                             json.dump(metrics, f, indent=2)
@@ -735,13 +1050,29 @@ def main() -> None:
                         continue
 
                 # Compute SHAP delta on a small sample.
-                if shap is not None:
+                if shap is not None or (model_name in {"tabpfn", "apt"} and args.tabpfn_importance == "perm"):
+                    if model_name in {"tabpfn", "apt"} and args.tabpfn_importance == "none":
+                        shap_top_k.setdefault(scenario, [])
+                        if scenario == "clean":
+                            shap_clean_top = []
+                        else:
+                            shap_comparisons[scenario] = []
+                        continue
                     sample_cap = 200 if model_name in {"rf", "lgbm", "catboost", "xgboost"} else 50
+                    if model_name in {"tabpfn", "apt"}:
+                        sample_cap = (
+                            args.tabpfn_shap_samples
+                            if args.tabpfn_importance == "shap"
+                            else args.tabpfn_perm_samples
+                        )
                     sample_idx = np.random.default_rng(RANDOM_STATE).choice(
                         X_test_proc.shape[0], size=min(sample_cap, X_test_proc.shape[0]), replace=False
                     )
                     X_sample = X_test_proc[sample_idx]
-                    feature_names = _feature_names(preprocessor)
+                    if model_name == "tabpfn":
+                        feature_names = tabpfn_feature_names(X_train_s)
+                    else:
+                        feature_names = _feature_names(preprocessor)
                     if len(feature_names) < X_sample.shape[1]:
                         extra = X_sample.shape[1] - len(feature_names)
                         feature_names = feature_names + [f"pad_{i}" for i in range(extra)]
@@ -754,13 +1085,46 @@ def main() -> None:
                                 one_hot_base_cols = [str(c) for c in cols]
                                 break
                     try:
-                        importance = compute_shap_importance(
-                            model,
-                            model_name,
-                            X_sample,
-                            feature_names,
-                            one_hot_base_cols=one_hot_base_cols,
-                        )
+                        if model_name in {"tabpfn", "apt"} and args.tabpfn_importance == "perm":
+                            le = None
+                            y_eval = y_test
+                            if cfg.task == "classification":
+                                le = LabelEncoder()
+                                y_eval = le.fit_transform(np.asarray(y_test))
+                                y_eval = np.asarray(y_eval)[sample_idx]
+                            else:
+                                y_eval = np.asarray(y_eval)[sample_idx]
+                            baseline = accuracy_score(y_eval, model.predict(X_sample))
+                            importances = []
+                            feature_indices = list(range(X_sample.shape[1]))
+                            if args.tabpfn_perm_features and args.tabpfn_perm_features < len(feature_indices):
+                                variances = np.var(X_sample, axis=0)
+                                feature_indices = list(
+                                    np.argsort(variances)[-args.tabpfn_perm_features :]
+                                )
+                            rng_local = np.random.default_rng(RANDOM_STATE)
+                            for col_idx in feature_indices:
+                                scores = []
+                                for _ in range(args.tabpfn_perm_repeats):
+                                    X_perm = X_sample.copy()
+                                    rng_local.shuffle(X_perm[:, col_idx])
+                                    preds = model.predict(X_perm)
+                                    scores.append(accuracy_score(y_eval, preds))
+                                importances.append(baseline - float(np.mean(scores)))
+                            importance = {
+                                feature_names[feature_indices[i]]: float(importances[i])
+                                for i in range(len(importances))
+                            }
+                        else:
+                            importance = compute_shap_importance(
+                                model,
+                                model_name,
+                                X_sample,
+                                feature_names,
+                                one_hot_base_cols=one_hot_base_cols,
+                                kernel_nsamples=args.tabpfn_shap_nsamples if model_name in {"tabpfn", "apt"} else None,
+                                background_size=args.tabpfn_shap_background if model_name in {"tabpfn", "apt"} else None,
+                            )
                         top_list = top_k_features(importance, k=10)
                         shap_top_k[scenario] = top_list
                         if scenario == "clean":

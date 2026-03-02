@@ -43,8 +43,18 @@ try:
 except Exception:
     shap = None
 
+try:
+    from tabpfn import TabPFNClassifier
+except Exception:
+    TabPFNClassifier = None
+
+try:
+    from apt.model import APTClassifier
+except Exception:
+    APTClassifier = None
+
 RANDOM_STATE = 42
-RESULTS_DIR = Path("results/why_tree_outperforms")
+RESULTS_DIR = Path("results/tree_vs_deep_stability_analysis")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -68,7 +78,7 @@ DATASETS: Dict[str, DatasetConfig] = {
     ),
 }
 
-MODELS = ["rf", "lgbm", "catboost", "xgboost", "mlp", "tabnet"]
+MODELS = ["rf", "lgbm", "catboost", "xgboost", "mlp", "tabnet", "tabpfn", "apt"]
 
 
 def load_dataset(cfg: DatasetConfig) -> Tuple[pd.DataFrame, pd.Series]:
@@ -90,6 +100,60 @@ def build_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
     return ColumnTransformer(transformers)
 
 
+def build_tabpfn_inputs(
+    X_train: pd.DataFrame, X_test: pd.DataFrame
+) -> Tuple[np.ndarray, np.ndarray, List[int], List[str]]:
+    cat_cols = [c for c in X_train.columns if X_train[c].dtype == object]
+    num_cols = [c for c in X_train.columns if c not in cat_cols]
+    num_means = {c: float(X_train[c].mean()) for c in num_cols}
+    categories = {
+        col: pd.Categorical(X_train[col].astype(str).fillna("missing")).categories
+        for col in cat_cols
+    }
+
+    def encode(df: pd.DataFrame) -> np.ndarray:
+        num = (
+            df[num_cols].astype(float).fillna(pd.Series(num_means)).to_numpy()
+            if num_cols
+            else np.empty((len(df), 0))
+        )
+        if cat_cols:
+            cat_arrays = []
+            for col in cat_cols:
+                cat = pd.Categorical(
+                    df[col].astype(str).fillna("missing"),
+                    categories=categories[col],
+                )
+                cat_arrays.append(cat.codes.reshape(-1, 1))
+            cat_mat = np.hstack(cat_arrays)
+        else:
+            cat_mat = np.empty((len(df), 0))
+        return np.hstack([num, cat_mat]).astype(np.float32)
+
+    X_train_proc = encode(X_train)
+    X_test_proc = encode(X_test)
+    cat_indices = list(range(len(num_cols), len(num_cols) + len(cat_cols)))
+    feature_names = [str(c) for c in num_cols + cat_cols]
+    return X_train_proc, X_test_proc, cat_indices, feature_names
+
+
+def load_apt_artifact(model_path: Path):
+    if torch is None:
+        raise RuntimeError("torch not available for APT loading")
+    if APTClassifier is None:
+        raise RuntimeError("APT not installed")
+    payload = torch.load(model_path, map_location="cpu", weights_only=False)
+    model = APTClassifier(device="cpu")
+    state = payload.get("state_dict") if isinstance(payload, dict) else None
+    if state:
+        model.load_state_dict(state)
+    for key in ["x_train", "y_train", "x_encoder", "y_encoder", "feature_perm"]:
+        if isinstance(payload, dict) and key in payload:
+            setattr(model, key, payload[key])
+    model.eval()
+    return model
+
+
 def classification_metrics(y_true, y_pred, is_multiclass: bool) -> Dict[str, float]:
     average = "macro" if is_multiclass else "binary"
     acc = accuracy_score(y_true, y_pred)
@@ -101,6 +165,8 @@ def load_model(cfg: DatasetConfig, model_name: str):
     model_path = Path("results/hpo") / cfg.name / model_name / "best_model.pkl"
     if not model_path.exists():
         raise FileNotFoundError(f"Missing model at {model_path}")
+    if model_name == "apt":
+        return load_apt_artifact(model_path)
     return joblib.load(model_path)
 
 
@@ -159,10 +225,16 @@ def compute_shap_importance(
         else:
             values = values.mean(axis=0)
     else:
-        predict_fn = model.predict_proba if hasattr(model, "predict_proba") else model.predict
-        background = shap.utils.sample(X_sample, min(50, X_sample.shape[0]))
+        if model_name in {"tabpfn", "apt"}:
+            predict_fn = model.predict
+            background = shap.utils.sample(X_sample, min(5, X_sample.shape[0]))
+            nsamples = 10
+        else:
+            predict_fn = model.predict_proba if hasattr(model, "predict_proba") else model.predict
+            background = shap.utils.sample(X_sample, min(50, X_sample.shape[0]))
+            nsamples = 50
         explainer = shap.KernelExplainer(predict_fn, background)
-        shap_values = explainer.shap_values(X_sample, nsamples=50)
+        shap_values = explainer.shap_values(X_sample, nsamples=nsamples)
         if isinstance(shap_values, list):
             values = np.mean([np.abs(v) for v in shap_values], axis=0)
         else:
@@ -213,17 +285,22 @@ def evaluate_model(
         random_state=RANDOM_STATE,
         stratify=y,
     )
-    preprocessor = build_preprocessor(X_train)
-    X_train_proc = preprocessor.fit_transform(X_train)
-    X_test_proc = preprocessor.transform(X_test)
-    if hasattr(X_train_proc, "toarray"):
-        X_train_proc = X_train_proc.toarray()
-        X_test_proc = X_test_proc.toarray()
+    if model_name == "tabpfn":
+        X_train_proc, X_test_proc, _, feature_names = build_tabpfn_inputs(X_train, X_test)
+        preprocessor = None
+    else:
+        preprocessor = build_preprocessor(X_train)
+        X_train_proc = preprocessor.fit_transform(X_train)
+        X_test_proc = preprocessor.transform(X_test)
+        if hasattr(X_train_proc, "toarray"):
+            X_train_proc = X_train_proc.toarray()
+            X_test_proc = X_test_proc.toarray()
+        feature_names = _feature_names(preprocessor)
 
     model = load_model(cfg, model_name)
 
     label_encoder = None
-    if model_name == "tabnet":
+    if model_name in {"tabnet", "tabpfn", "apt"}:
         label_encoder = LabelEncoder()
         label_encoder.fit(y_train)
         y_test_eval = label_encoder.transform(y_test)
@@ -231,10 +308,15 @@ def evaluate_model(
     else:
         y_test_eval = y_test
 
+    rng = np.random.default_rng(RANDOM_STATE)
+    eval_idx = None
+    if model_name in {"tabpfn", "apt"} and X_test_proc.shape[0] > 20:
+        eval_idx = rng.choice(X_test_proc.shape[0], size=20, replace=False)
+        X_test_proc = X_test_proc[eval_idx]
+        y_test_eval = np.asarray(y_test_eval)[eval_idx]
     preds = model.predict(X_test_proc)
     metrics_clean = classification_metrics(y_test_eval, preds, cfg.is_multiclass)
 
-    rng = np.random.default_rng(RANDOM_STATE)
     num_cols = [c for c in X_train.columns if X_train[c].dtype != object]
     cat_cols = [c for c in X_train.columns if X_train[c].dtype == object]
     num_stats = {c: (float(X_train[c].mean()), float(X_train[c].std())) for c in num_cols}
@@ -247,22 +329,28 @@ def evaluate_model(
     shift_imp = None
     if run_shift:
         X_shift = apply_covariate_shift(X_test, num_stats, cat_modes, rng)
-        X_shift_proc = preprocessor.transform(X_shift)
-        if hasattr(X_shift_proc, "toarray"):
-            X_shift_proc = X_shift_proc.toarray()
-        if model_name == "tabnet":
-            X_shift_proc = np.asarray(X_shift_proc, dtype=np.float32)
+        if model_name == "tabpfn":
+            _, X_shift_proc, _, _ = build_tabpfn_inputs(X_train, X_shift)
+        else:
+            X_shift_proc = preprocessor.transform(X_shift)
+            if hasattr(X_shift_proc, "toarray"):
+                X_shift_proc = X_shift_proc.toarray()
+            if model_name in {"tabnet", "apt"}:
+                X_shift_proc = np.asarray(X_shift_proc, dtype=np.float32)
+        if eval_idx is not None:
+            X_shift_proc = X_shift_proc[eval_idx]
         preds_shift = model.predict(X_shift_proc)
         metrics_shift = classification_metrics(y_test_eval, preds_shift, cfg.is_multiclass)
 
     stability = None
-    if shap is not None:
+    if shap is not None and model_name not in {"tabpfn", "apt"}:
         sample_cap = max_shap_samples
         if model_name in {"mlp", "tabnet"}:
             sample_cap = min(sample_cap, 50)
         sample_n = min(sample_cap, X_test_proc.shape[0])
         idx = rng.choice(X_test_proc.shape[0], size=sample_n, replace=False)
-        feature_names = _feature_names(preprocessor)
+        if model_name != "tabpfn":
+            feature_names = _feature_names(preprocessor)
         clean_imp = compute_shap_importance(
             model,
             model_name,
