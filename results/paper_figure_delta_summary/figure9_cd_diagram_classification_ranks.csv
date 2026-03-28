@@ -1,0 +1,9 @@
+model,mean_rank
+lgbm,2.25
+catboost,2.5
+xgboost,2.75
+tabnet,4.125
+rf,4.625
+tabpfn,5.75
+mlp,6.125
+apt,7.875
