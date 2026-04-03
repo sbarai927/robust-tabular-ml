@@ -212,3 +212,7 @@ __marimo__/
 *.db
 *.db
 catboost_info/
+
+# local artifacts
+wandb/
+**/.DS_Store
