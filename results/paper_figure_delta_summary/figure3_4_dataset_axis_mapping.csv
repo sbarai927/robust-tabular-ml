@@ -1,0 +1,7 @@
+dataset_axis,dataset
+0,drybean
+1,mnist
+2,telco
+3,titanic
+4,diamonds_v2
+5,diamonds_v3

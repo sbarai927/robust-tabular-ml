@@ -1,0 +1,9 @@
+model,family,task_support,hpo_applied,special_note
+catboost,Tree-based GBDT,Classification + Regression,Yes (Optuna),Native categorical handling
+lgbm,Tree-based GBDT,Classification + Regression,Yes (Optuna),Fast histogram-based boosting
+xgboost,Tree-based GBDT,Classification + Regression,Yes (Optuna),Strong baseline gradient boosting
+rf,Tree-based Ensemble,Classification + Regression,Yes (Optuna),Bagging-based random forest
+mlp,Neural Network,Classification + Regression,Yes (Optuna),Feed-forward dense network
+tabnet,Neural Network (Tabular),Classification + Regression,Yes (Optuna),Sequential attention-based tabular NN
+tabpfn,Foundation Model (Tabular),Classification only,No (default config),Pretrained prior-data fitted network
+apt,Transformer (Adversarially Pre-trained),Classification only (this study),No (default config),Used with fixed checkpoint and default tuning-off setup
