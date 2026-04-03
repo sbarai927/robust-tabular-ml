@@ -778,7 +778,11 @@ def train_model(
         with open(out_dir / "best_params.json", "w") as f:
             json.dump(params, f, indent=2)
         pd.DataFrame([metrics]).to_csv(out_dir / "metrics.csv", index=False)
-        pd.DataFrame([params]).to_csv(out_dir / "trials.csv", index=False)
+        trial_row = params.copy()
+        trial_row["trial_number"] = 0
+        trial_row["score"] = best_value
+        trial_row["state"] = "COMPLETE"
+        pd.DataFrame([trial_row]).to_csv(out_dir / "trials.csv", index=False)
         joblib.dump({"baseline": True, "params": params}, out_dir / "study.pkl")
         print(f"✔ Saved baseline results for {cfg.name} / {model_name} to {out_dir}")
         return metrics
@@ -813,7 +817,14 @@ def train_model(
     elapsed = time.time() - start
     # Save study
     joblib.dump(study, out_dir / "study.pkl")
-    pd.DataFrame([t.params for t in study.trials]).to_csv(out_dir / "trials.csv", index=False)
+    trial_rows = []
+    for t in sorted(study.trials, key=lambda x: x.number):
+        row = dict(t.params)
+        row["trial_number"] = t.number
+        row["score"] = t.value if t.value is not None else np.nan
+        row["state"] = t.state.name if hasattr(t.state, "name") else str(t.state)
+        trial_rows.append(row)
+    pd.DataFrame(trial_rows).to_csv(out_dir / "trials.csv", index=False)
     # Refit best model
     best_params = study.best_trial.params
     fit_params = {}
