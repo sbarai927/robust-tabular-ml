@@ -1,2 +1,2 @@
-model,config,device
-tabpfn,default,cpu
+model,config,device,score,state,trial_number
+tabpfn,default,cpu,0.9888084519292312,COMPLETE,0.0

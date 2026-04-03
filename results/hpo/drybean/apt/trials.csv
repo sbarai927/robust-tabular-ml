@@ -1,2 +1,2 @@
-model,config,device
-apt,default,cpu
+model,config,device,score,state,trial_number
+apt,default,cpu,0.6609517973856209,COMPLETE,0.0
