@@ -1,0 +1,8 @@
+model,mean_accuracy_clean,mean_accuracy_shift,mean_accuracy_delta_shift_minus_clean,mean_f1_clean,mean_f1_shift,mean_f1_delta_shift_minus_clean,mean_shap_spearman,mean_shap_jaccard,n_datasets_with_perf,n_datasets_with_shap
+catboost,0.932998,0.715998,-0.217000,0.864263,0.621144,-0.243119,0.992377,0.939394,3,3
+lgbm,NA,NA,NA,NA,NA,NA,NA,NA,0,0
+rf,0.850254,0.704469,-0.145785,0.620262,0.474098,-0.146163,0.988502,0.878788,3,3
+mlp,0.747757,0.676971,-0.070786,0.726536,0.636836,-0.089700,0.942586,0.698413,3,3
+tabnet,0.818573,0.695785,-0.122788,0.843091,0.671167,-0.171924,0.947760,0.467172,3,3
+tabpfn,0.798919,0.626937,-0.171982,0.787599,0.562084,-0.225515,NA,NA,3,0
+apt,0.637568,0.593243,-0.044324,0.481393,0.402575,-0.078818,NA,NA,3,0
