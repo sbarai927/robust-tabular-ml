@@ -25,6 +25,7 @@ from pathlib import Path
 
 import matplotlib
 from matplotlib.patches import Ellipse, Rectangle
+from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
@@ -273,46 +274,34 @@ def _draw_panel(ax: plt.Axes, panel_df: pd.DataFrame, title: str) -> None:
     ax.set_title(title, fontsize=11, pad=7)
 
     # A dedicated strip for models with predictive data but no SHAP.
-    strip_lo, strip_hi = -0.22, -0.06
-    missing_y = -0.14
+    strip_lo, strip_hi = -0.205, -0.085
+    missing_y = -0.145
     ax.axhspan(strip_lo, strip_hi, color="#d9d9d9", alpha=0.9, zorder=0)
     ax.axhline(strip_hi, color="#8d8d8d", linewidth=1.1, zorder=1)
     ax.axhline(strip_lo, color="#8d8d8d", linewidth=1.1, zorder=1)
 
-    # "Better" region (upper-right) and reference lines.
+    # Small "favorable" region (upper-right) and fixed x=0 reference.
     main = panel_df[panel_df["shap_jaccard"].notna()].copy()
     if not main.empty:
-        x_ref = float(main["predictive_retention"].median())
-        y_ref = float(main["shap_jaccard"].median())
+        x_ref = float(main["predictive_retention"].quantile(0.80))
+        y_ref = float(main["shap_jaccard"].quantile(0.80))
         x_max = float(main["predictive_retention"].max())
         y_max = float(main["shap_jaccard"].max())
         rect = Rectangle(
             (x_ref, y_ref),
             max(1e-6, x_max - x_ref),
             max(1e-6, y_max - y_ref),
-            facecolor="#8fcf9f",
+            facecolor="#6FCE7A",
             edgecolor="none",
-            alpha=0.4,
+            alpha=0.46,
             zorder=0.5,
         )
         ax.add_patch(rect)
-        ax.axvline(x_ref, linestyle="--", color="#9a9a9a", linewidth=0.75, alpha=0.8, zorder=1)
         ax.axhline(y_ref, linestyle="--", color="#9a9a9a", linewidth=0.75, alpha=0.8, zorder=1)
 
     # Family overlays (main area only).
     draw_family_overlay(ax, panel_df, "tree")
     draw_family_overlay(ax, panel_df, "neural")
-
-    # Slight label offsets to reduce overlaps.
-    text_jitter = {
-        "catboost": (0.006, 0.02),
-        "lgbm": (0.006, -0.018),
-        "rf": (0.006, 0.016),
-        "mlp": (0.006, -0.014),
-        "tabnet": (0.006, 0.014),
-        "apt": (0.006, 0.008),
-        "tabpfn": (0.006, -0.008),
-    }
 
     panel_df = panel_df.copy()
     panel_df["has_shap"] = panel_df["shap_jaccard"].notna()
@@ -347,15 +336,6 @@ def _draw_panel(ax: plt.Axes, panel_df: pd.DataFrame, title: str) -> None:
             linewidth=0.75,
             zorder=3,
         )
-        dx, dy = text_jitter.get(m, (0.004, 0.01))
-        ax.text(
-            x + dx,
-            y + dy,
-            m,
-            fontsize=8.4,
-            color=style["color"],
-            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.65, "pad": 0.2},
-        )
 
     # Models without SHAP: keep them visible and explicit.
     miss = panel_df[~panel_df["has_shap"]].copy()
@@ -377,29 +357,12 @@ def _draw_panel(ax: plt.Axes, panel_df: pd.DataFrame, title: str) -> None:
                 linewidth=1.1,
                 zorder=3,
             )
-            ax.text(
-                x + 0.006,
-                y + 0.008,
-                m,
-                fontsize=7.8,
-                color=style["color"],
-                bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.75, "pad": 0.15},
-            )
 
     ax.set_ylim(-0.24, 1.02)
     # shared y-label will be added at figure level
     ax.set_xlabel("Predictive Retention (perturbed - clean)")
-    ax.axhline(0.0, color="#a7a7a7", linewidth=0.75, alpha=0.8)
-    ax.text(
-        0.99,
-        0.98,
-        "better \u2197",
-        transform=ax.transAxes,
-        ha="right",
-        va="top",
-        fontsize=8,
-        color="#666666",
-    )
+    ax.axvline(0.0, linestyle="--", color="#6f6f6f", linewidth=0.9, alpha=0.9, zorder=1.2)
+    ax.axhline(0.0, color="#a7a7a7", linewidth=0.70, alpha=0.75)
 
 
 def main() -> None:
@@ -414,38 +377,76 @@ def main() -> None:
     plot_df.to_csv(DATA_PATH, index=False)
 
     fig, axes = plt.subplots(1, 3, figsize=(13.2, 5.2))
-    fig.subplots_adjust(left=0.07, right=0.995, top=0.84, bottom=0.24, wspace=0.17)
+    fig.subplots_adjust(left=0.07, right=0.995, top=0.83, bottom=0.255, wspace=0.17)
 
     _draw_panel(axes[0], panel_a, "A. Missingness")
     _draw_panel(axes[1], panel_b, "B. High-cardinality Stress")
     _draw_panel(axes[2], panel_c, "C. Covariate Shift")
 
-    # Panel-wise x-limits reduce dead space and improve readability.
+    # Panel-wise x-limits reduce dead space and keep x=0 visible in all panels.
     for ax, dfp in zip(axes, [panel_a, panel_b, panel_c]):
         x_min = float(dfp["predictive_retention"].min())
         x_max = float(dfp["predictive_retention"].max())
         pad = max(0.02, 0.12 * (x_max - x_min if x_max > x_min else 1.0))
-        ax.set_xlim(x_min - pad, x_max + pad)
-
-    # One global explanatory note to avoid repeated panel text.
-    fig.text(
-        0.5,
-        0.085,
-        "Lower shaded band = predictive-only (no SHAP); error bars = dataset-level std; "
-        "translucent regions = family grouping; green quadrant = stronger robustness.",
-        ha="center",
-        va="center",
-        fontsize=8.3,
-        color="#4f4f4f",
-    )
+        left = x_min - pad
+        right = x_max + pad
+        ax.set_xlim(left, max(right, 0.02))
 
     # Shared Y label for all panels.
     fig.supylabel("SHAP Top-k Stability (Jaccard)", x=0.015, fontsize=10)
 
+    # Bottom legend block (figure-level) for model/logo identification.
+    model_handles = [
+        Line2D(
+            [0],
+            [0],
+            marker=MODEL_STYLE[m]["marker"],
+            color="none",
+            markerfacecolor=MODEL_STYLE[m]["color"],
+            markeredgecolor="white",
+            markeredgewidth=0.8,
+            markersize=7.2,
+            label=m,
+        )
+        for m in MODEL_STYLE
+    ]
+    fig.legend(
+        handles=model_handles,
+        loc="lower center",
+        ncol=7,
+        fontsize=8.0,
+        frameon=False,
+        bbox_to_anchor=(0.5, 0.105),
+        handletextpad=0.25,
+        columnspacing=0.95,
+    )
+
+    # Concise semantics legend under model identities.
+    fig.text(
+        0.5,
+        0.063,
+        "Square=tree, circle=neural, diamond=pretrained | "
+        "dashed vertical line: x=0 (no change) | "
+        "lower gray band: predictive-only (SHAP unavailable)",
+        ha="center",
+        va="center",
+        fontsize=8.2,
+        color="#4f4f4f",
+    )
+    fig.text(
+        0.5,
+        0.042,
+        "Green region per panel: top-right quadrant starting at the 80th percentile of predictive retention and SHAP Jaccard.",
+        ha="center",
+        va="center",
+        fontsize=7.9,
+        color="#4f4f4f",
+    )
+
     fig.suptitle(
         "Performance Retention vs Attribution Stability Under Perturbation",
         fontsize=13,
-        y=0.98,
+        y=0.965,
     )
 
     fig.savefig(FIG_PATH, dpi=300, bbox_inches="tight")
