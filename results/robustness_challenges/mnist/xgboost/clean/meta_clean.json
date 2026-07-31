@@ -1,0 +1,13 @@
+{
+  "train_time_sec": 0.44032883644104004,
+  "model_size_mb": 2.5161008834838867,
+  "timestamp": "2026-07-18 15:34:28",
+  "params": {
+    "n_estimators": 294,
+    "max_depth": 8,
+    "learning_rate": 0.11328819410390553,
+    "subsample": 0.6526851851437103,
+    "colsample_bytree": 0.7507983883065513
+  },
+  "scenario": "clean"
+}

@@ -20,3 +20,6 @@ telco,tabnet,missingness,0.7654584221748401,0.4891640866873065,1.053273916244506
 telco,tabpfn,clean,1.0,0.0,0.0,37.7882719039917,2026-02-18 01:55:24,"{'model': 'tabpfn', 'config': 'default', 'device': 'cpu'}",True,1.0,1407.0
 telco,tabpfn,high_cardinality,0.94,0.7272727272727273,0.0,37.78845500946045,2026-02-18 23:36:07,"{'model': 'tabpfn', 'config': 'default', 'device': 'cpu'}",True,50.0,1407.0
 telco,tabpfn,missingness,1.0,0.0,0.0,37.7882719039917,2026-02-18 02:09:01,"{'model': 'tabpfn', 'config': 'default', 'device': 'cpu'}",True,1.0,1407.0
+telco,xgboost,clean,0.7917555081734187,0.5735080058224163,0.06518387794494629,0.27652835845947266,2026-07-18 15:34:31,"{'n_estimators': 246, 'max_depth': 3, 'learning_rate': 0.03490956896892433, 'subsample': 0.8759016448768311, 'colsample_bytree': 0.991442309779317}",,,
+telco,xgboost,high_cardinality,0.7917555081734187,0.5796269727403156,0.07530021667480469,0.2758808135986328,2026-07-18 15:34:31,"{'n_estimators': 246, 'max_depth': 3, 'learning_rate': 0.03490956896892433, 'subsample': 0.8759016448768311, 'colsample_bytree': 0.991442309779317}",,,
+telco,xgboost,missingness,0.7882018479033405,0.5681159420289855,0.06215405464172363,0.2756185531616211,2026-07-18 15:34:31,"{'n_estimators': 246, 'max_depth': 3, 'learning_rate': 0.03490956896892433, 'subsample': 0.8759016448768311, 'colsample_bytree': 0.991442309779317}",,,

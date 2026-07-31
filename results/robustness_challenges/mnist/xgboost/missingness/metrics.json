@@ -1,0 +1,17 @@
+{
+  "Accuracy": 0.9722222222222222,
+  "F1": 0.9717526553423704,
+  "train_time_sec": 0.44437575340270996,
+  "model_size_mb": 2.5445423126220703,
+  "timestamp": "2026-07-18 15:34:29",
+  "params": {
+    "n_estimators": 294,
+    "max_depth": 8,
+    "learning_rate": 0.11328819410390553,
+    "subsample": 0.6526851851437103,
+    "colsample_bytree": 0.7507983883065513
+  },
+  "scenario": "missingness",
+  "model": "xgboost",
+  "dataset": "mnist"
+}

@@ -1,0 +1,29 @@
+{
+  "spearman": 0.9999995418170244,
+  "top_k": 10,
+  "jaccard": 0.8181818181818182,
+  "clean_top": [
+    "Contract_Month-to-month",
+    "Contract_Two year",
+    "InternetService_Fiber optic",
+    "MonthlyCharges",
+    "MultipleLines_No",
+    "OnlineSecurity_No",
+    "PaymentMethod_Electronic check",
+    "TechSupport_No",
+    "TotalCharges",
+    "tenure"
+  ],
+  "shift_top": [
+    "Contract_Month-to-month",
+    "Contract_Two year",
+    "InternetService_Fiber optic",
+    "MonthlyCharges",
+    "OnlineSecurity_No",
+    "PaymentMethod_Electronic check",
+    "SeniorCitizen",
+    "TechSupport_No",
+    "TotalCharges",
+    "tenure"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "clean": [
+    "Contract",
+    "tenure",
+    "MonthlyCharges",
+    "OnlineSecurity",
+    "TechSupport",
+    "customerID",
+    "PaymentMethod",
+    "TotalCharges",
+    "MultipleLines",
+    "PaperlessBilling"
+  ],
+  "missingness": [
+    "Contract",
+    "tenure",
+    "MonthlyCharges",
+    "OnlineSecurity",
+    "customerID",
+    "PaymentMethod",
+    "TechSupport",
+    "TotalCharges",
+    "MultipleLines",
+    "OnlineBackup"
+  ],
+  "high_cardinality": [
+    "Contract",
+    "tenure",
+    "MonthlyCharges",
+    "OnlineSecurity",
+    "TechSupport",
+    "customerID",
+    "PaymentMethod",
+    "MultipleLines",
+    "TotalCharges",
+    "high_card_0"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "clean": [
+    "carat_weight",
+    "color",
+    "clarity",
+    "meas_length",
+    "meas_width",
+    "meas_depth",
+    "fancy_color_dominant_color",
+    "lab",
+    "cut",
+    "fluor_intensity"
+  ],
+  "missingness": [
+    "carat_weight",
+    "color",
+    "clarity",
+    "meas_width",
+    "meas_length",
+    "lab",
+    "fancy_color_dominant_color",
+    "cut",
+    "cut_quality",
+    "fluor_intensity"
+  ],
+  "high_cardinality": [
+    "carat_weight",
+    "color",
+    "meas_length",
+    "clarity",
+    "meas_width",
+    "meas_depth",
+    "lab",
+    "fancy_color_dominant_color",
+    "cut",
+    "fluor_intensity"
+  ]
+}

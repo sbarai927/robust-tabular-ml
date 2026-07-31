@@ -1,0 +1,17 @@
+{
+  "Accuracy": 0.7917555081734187,
+  "F1": 0.5735080058224163,
+  "train_time_sec": 0.06518387794494629,
+  "model_size_mb": 0.27652835845947266,
+  "timestamp": "2026-07-18 15:34:31",
+  "params": {
+    "n_estimators": 246,
+    "max_depth": 3,
+    "learning_rate": 0.03490956896892433,
+    "subsample": 0.8759016448768311,
+    "colsample_bytree": 0.991442309779317
+  },
+  "scenario": "clean",
+  "model": "xgboost",
+  "dataset": "telco"
+}

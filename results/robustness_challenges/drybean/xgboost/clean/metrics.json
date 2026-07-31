@@ -1,0 +1,17 @@
+{
+  "Accuracy": 0.8209255533199196,
+  "F1": 0.8208791431290368,
+  "train_time_sec": 0.22489190101623535,
+  "model_size_mb": 1.961186408996582,
+  "timestamp": "2026-07-18 15:34:26",
+  "params": {
+    "n_estimators": 286,
+    "max_depth": 9,
+    "learning_rate": 0.029794526629031638,
+    "subsample": 0.9023968915894506,
+    "colsample_bytree": 0.9281889012746769
+  },
+  "scenario": "clean",
+  "model": "xgboost",
+  "dataset": "drybean"
+}

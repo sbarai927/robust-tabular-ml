@@ -1,0 +1,48 @@
+{
+  "clean_top_k": [
+    "pixel_2_5",
+    "pixel_3_2",
+    "pixel_5_2",
+    "pixel_5_3",
+    "pixel_4_4",
+    "pixel_7_5",
+    "pixel_6_5",
+    "pixel_3_3",
+    "pixel_2_4",
+    "pixel_4_6"
+  ],
+  "comparisons": {
+    "missingness": {
+      "top_k": [
+        "pixel_2_5",
+        "pixel_3_2",
+        "pixel_5_2",
+        "pixel_5_3",
+        "pixel_6_5",
+        "pixel_3_4",
+        "pixel_3_3",
+        "pixel_6_6",
+        "pixel_2_4",
+        "pixel_4_6"
+      ],
+      "overlap_count": 8,
+      "jaccard": 0.6666666666666666
+    },
+    "high_cardinality": {
+      "top_k": [
+        "pixel_2_5",
+        "pixel_5_2",
+        "pixel_3_2",
+        "pixel_5_3",
+        "pixel_7_5",
+        "pixel_4_4",
+        "pixel_3_3",
+        "pixel_2_4",
+        "pixel_6_5",
+        "pixel_3_4"
+      ],
+      "overlap_count": 9,
+      "jaccard": 0.8181818181818182
+    }
+  }
+}
