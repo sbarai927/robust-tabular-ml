@@ -20,7 +20,7 @@ from collections import defaultdict
 from pathlib import Path
 
 
-MODELS = ["catboost", "lgbm", "rf", "mlp", "tabnet", "apt", "tabpfn"]
+MODELS = ["catboost", "lgbm", "rf", "xgboost", "mlp", "tabnet", "apt", "tabpfn"]
 
 
 def _to_float(v: str | None) -> float | None:

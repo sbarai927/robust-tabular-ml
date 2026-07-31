@@ -62,6 +62,10 @@ from typing import Dict, List, Tuple
 os.environ.setdefault("KMP_USE_SHM", "0")
 os.environ.setdefault("KMP_SHM_DISABLE", "1")
 os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
 os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
 try:

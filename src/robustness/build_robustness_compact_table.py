@@ -20,7 +20,7 @@ from typing import Dict, Tuple
 
 DATASETS = ["diamonds_v2", "drybean", "mnist", "telco"]
 SCENARIOS = ["clean", "missingness", "high_cardinality"]
-MODELS = ["catboost", "lgbm", "rf", "mlp", "tabnet", "apt", "tabpfn"]
+MODELS = ["catboost", "lgbm", "rf", "xgboost", "mlp", "tabnet", "apt", "tabpfn"]
 
 
 MetricKey = Tuple[str, str, str]  # (dataset, model, scenario)
@@ -53,7 +53,7 @@ def load_metrics(metrics_dir: Path) -> Dict[MetricKey, dict]:
         with p.open(newline="") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                ds = row.get("dataset", "").strip()
+                ds = row.get("dataset", "").strip() or dataset
                 model = row.get("model", "").strip()
                 scenario = row.get("scenario", "").strip()
                 if ds not in DATASETS or model not in MODELS or scenario not in SCENARIOS:

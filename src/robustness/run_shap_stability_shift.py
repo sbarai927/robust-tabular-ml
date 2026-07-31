@@ -18,6 +18,10 @@ os.environ.setdefault("KMP_USE_SHM", "0")
 os.environ.setdefault("KMP_SHM_DISABLE", "1")
 os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
 os.environ.setdefault("MPLBACKEND", "Agg")
 mpl_dir = Path("results/.matplotlib").absolute()
 mpl_dir.mkdir(parents=True, exist_ok=True)
@@ -34,9 +38,16 @@ import numpy as np
 import pandas as pd
 
 from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import (
+    LabelEncoder,
+    OneHotEncoder,
+    OrdinalEncoder,
+    StandardScaler,
+)
 
 try:
     import shap
@@ -89,14 +100,71 @@ def load_dataset(cfg: DatasetConfig) -> Tuple[pd.DataFrame, pd.Series]:
     return X, y
 
 
-def build_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
+def build_preprocessor(X: pd.DataFrame, model_name: str) -> ColumnTransformer:
+    """Build the feature matrix expected by the saved HPO model artifacts."""
     cat_cols = [c for c in X.columns if X[c].dtype == object]
     num_cols = [c for c in X.columns if c not in cat_cols]
     transformers = []
     if num_cols:
-        transformers.append(("num", StandardScaler(), num_cols))
+        if model_name in {"apt"}:
+            transformers.append(
+                (
+                    "num",
+                    Pipeline(
+                        [
+                            ("imputer", SimpleImputer(strategy="mean")),
+                            ("scaler", StandardScaler()),
+                        ]
+                    ),
+                    num_cols,
+                )
+            )
+        else:
+            transformers.append(
+                (
+                    "num",
+                    Pipeline(
+                        [
+                            ("imputer", SimpleImputer(strategy="mean")),
+                            ("scaler", StandardScaler()),
+                        ]
+                    ),
+                    num_cols,
+                )
+            )
     if cat_cols:
-        transformers.append(("cat", OneHotEncoder(handle_unknown="ignore"), cat_cols))
+        if model_name in {"apt"}:
+            transformers.append(
+                (
+                    "cat",
+                    Pipeline(
+                        [
+                            (
+                                "imputer",
+                                SimpleImputer(strategy="constant", fill_value="Missing"),
+                            ),
+                            ("encoder", OneHotEncoder(handle_unknown="ignore")),
+                        ]
+                    ),
+                    cat_cols,
+                )
+            )
+        else:
+            transformers.append(
+                (
+                    "cat",
+                    Pipeline(
+                        [
+                            (
+                                "imputer",
+                                SimpleImputer(strategy="constant", fill_value="Missing"),
+                            ),
+                            ("encoder", OneHotEncoder(handle_unknown="ignore")),
+                        ]
+                    ),
+                    cat_cols,
+                )
+            )
     return ColumnTransformer(transformers)
 
 
@@ -170,6 +238,24 @@ def load_model(cfg: DatasetConfig, model_name: str):
     return joblib.load(model_path)
 
 
+def constrain_prediction_threads(model, model_name: str):
+    """Force single-thread prediction for libraries that can hit OpenMP SHM limits."""
+    try:
+        if model_name in {"rf", "lgbm", "xgboost"} and hasattr(model, "set_params"):
+            model.set_params(n_jobs=1)
+    except Exception:
+        pass
+    # Avoid calling LightGBM booster_.reset_parameter after unpickling: on some
+    # macOS/ARM environments it segfaults. The process-level thread variables
+    # above still keep prediction single-threaded enough for this evaluation.
+    try:
+        if model_name == "xgboost" and hasattr(model, "get_booster"):
+            model.get_booster().set_param({"nthread": 1})
+    except Exception:
+        pass
+    return model
+
+
 def apply_covariate_shift(
     X: pd.DataFrame,
     num_stats: Dict[str, Tuple[float, float]],
@@ -197,8 +283,17 @@ def apply_covariate_shift(
 def _feature_names(preprocessor: ColumnTransformer) -> List[str]:
     names = []
     for name, transformer, cols in preprocessor.transformers_:
-        if name == "cat" and hasattr(transformer, "get_feature_names_out"):
-            names.extend(transformer.get_feature_names_out(cols))
+        cols = [str(c) for c in cols]
+        encoder = None
+        if hasattr(transformer, "named_steps"):
+            encoder = transformer.named_steps.get("encoder")
+        if (
+            name == "cat"
+            and encoder is not None
+            and isinstance(encoder, OneHotEncoder)
+            and hasattr(encoder, "get_feature_names_out")
+        ):
+            names.extend(encoder.get_feature_names_out(cols))
         else:
             names.extend(cols)
     return [str(n) for n in names]
@@ -289,7 +384,7 @@ def evaluate_model(
         X_train_proc, X_test_proc, _, feature_names = build_tabpfn_inputs(X_train, X_test)
         preprocessor = None
     else:
-        preprocessor = build_preprocessor(X_train)
+        preprocessor = build_preprocessor(X_train, model_name)
         X_train_proc = preprocessor.fit_transform(X_train)
         X_test_proc = preprocessor.transform(X_test)
         if hasattr(X_train_proc, "toarray"):
@@ -297,10 +392,10 @@ def evaluate_model(
             X_test_proc = X_test_proc.toarray()
         feature_names = _feature_names(preprocessor)
 
-    model = load_model(cfg, model_name)
+    model = constrain_prediction_threads(load_model(cfg, model_name), model_name)
 
     label_encoder = None
-    if model_name in {"tabnet", "tabpfn", "apt"}:
+    if model_name in {"tabnet", "tabpfn", "apt", "xgboost"}:
         label_encoder = LabelEncoder()
         label_encoder.fit(y_train)
         y_test_eval = label_encoder.transform(y_test)
@@ -344,37 +439,42 @@ def evaluate_model(
 
     stability = None
     if shap is not None and model_name not in {"tabpfn", "apt"}:
-        sample_cap = max_shap_samples
-        if model_name in {"mlp", "tabnet"}:
-            sample_cap = min(sample_cap, 50)
-        sample_n = min(sample_cap, X_test_proc.shape[0])
-        idx = rng.choice(X_test_proc.shape[0], size=sample_n, replace=False)
-        if model_name != "tabpfn":
-            feature_names = _feature_names(preprocessor)
-        clean_imp = compute_shap_importance(
-            model,
-            model_name,
-            X_test_proc[idx],
-            feature_names,
-            cfg.is_multiclass,
-        )
-        pd.DataFrame(
-            {"feature": list(clean_imp.keys()), "importance": list(clean_imp.values())}
-        ).to_csv(out_dir / "shap_importance_clean.csv", index=False)
-        if run_shift:
-            shift_imp = compute_shap_importance(
+        try:
+            sample_cap = max_shap_samples
+            if model_name in {"mlp", "tabnet"}:
+                sample_cap = min(sample_cap, 50)
+            sample_n = min(sample_cap, X_test_proc.shape[0])
+            idx = rng.choice(X_test_proc.shape[0], size=sample_n, replace=False)
+            if model_name != "tabpfn":
+                feature_names = _feature_names(preprocessor)
+            clean_imp = compute_shap_importance(
                 model,
                 model_name,
-                X_shift_proc[idx],
+                X_test_proc[idx],
                 feature_names,
                 cfg.is_multiclass,
             )
             pd.DataFrame(
-                {"feature": list(shift_imp.keys()), "importance": list(shift_imp.values())}
-            ).to_csv(out_dir / "shap_importance_shift.csv", index=False)
-            stability = rank_stability(clean_imp, shift_imp, top_k=10)
-            with open(out_dir / "shap_stability.json", "w") as f:
-                json.dump(stability, f, indent=2)
+                {"feature": list(clean_imp.keys()), "importance": list(clean_imp.values())}
+            ).to_csv(out_dir / "shap_importance_clean.csv", index=False)
+            if run_shift:
+                shift_imp = compute_shap_importance(
+                    model,
+                    model_name,
+                    X_shift_proc[idx],
+                    feature_names,
+                    cfg.is_multiclass,
+                )
+                pd.DataFrame(
+                    {"feature": list(shift_imp.keys()), "importance": list(shift_imp.values())}
+                ).to_csv(out_dir / "shap_importance_shift.csv", index=False)
+                stability = rank_stability(clean_imp, shift_imp, top_k=10)
+                with open(out_dir / "shap_stability.json", "w") as f:
+                    json.dump(stability, f, indent=2)
+        except Exception as exc:
+            with open(out_dir / "shap_error.json", "w") as f:
+                json.dump({"error": str(exc)}, f, indent=2)
+            print(f"⚠️ SHAP failed but predictive metrics were kept for {cfg.name}/{model_name}: {exc}")
 
     if run_shift and metrics_shift is not None:
         delta_f1 = metrics_shift["F1"] - metrics_clean["F1"]
