@@ -1,0 +1,23 @@
+model,task_type,metric_name,mean_test_score,std_test_score,n_successful_runs,notes
+catboost,classification,F1,0.8010866352110227,0.1481811242026303,12,
+xgboost,classification,F1,0.7968467125106832,0.14464854060831725,12,
+lgbm,classification,F1,0.7817536369668581,0.15609462265546545,12,
+mlp,classification,F1,0.7691732653666121,0.15679626071421532,12,
+tabnet,classification,F1,0.661726764594904,0.2585691682404758,12,
+rf,classification,F1,0.6419456336751267,0.39568536724891235,12,
+apt,classification,F1,,,0,Pretrained/default baseline; repeated random initialization is not comparable in this lightweight check.
+tabpfn,classification,F1,,,0,Pretrained/default baseline; repeated random initialization is not comparable in this lightweight check.
+catboost,regression,R2,0.8182502910094578,0.03000742237166735,6,"Large regression datasets use a deterministic 10,000-row cap."
+mlp,regression,R2,0.7925258249465988,0.0932581752895588,6,"Large regression datasets use a deterministic 10,000-row cap."
+rf,regression,R2,0.775626546121643,0.02520936201992636,6,"Large regression datasets use a deterministic 10,000-row cap."
+xgboost,regression,R2,0.7737530569235483,0.06220605311521127,6,"Large regression datasets use a deterministic 10,000-row cap."
+lgbm,regression,R2,0.7165752506782179,0.11417866797295653,6,"Large regression datasets use a deterministic 10,000-row cap."
+tabnet,regression,R2,0.02124646306037903,0.12406440133799553,6,"Large regression datasets use a deterministic 10,000-row cap."
+apt,regression,R2,,,0,No saved HPO/default configuration found for this task.
+tabpfn,regression,R2,,,0,No saved HPO/default configuration found for this task.
+tabnet,regression,RMSE,18891.420776390816,4151.908773436592,6,"Large regression datasets use a deterministic 10,000-row cap."
+lgbm,regression,RMSE,9937.730931271564,2297.3083879943833,6,"Large regression datasets use a deterministic 10,000-row cap."
+xgboost,regression,RMSE,9029.09359248034,2084.5410788020304,6,"Large regression datasets use a deterministic 10,000-row cap."
+rf,regression,RMSE,8964.485510130864,1397.3306993278368,6,"Large regression datasets use a deterministic 10,000-row cap."
+mlp,regression,RMSE,8246.8939977579,1453.2312153971884,6,"Large regression datasets use a deterministic 10,000-row cap."
+catboost,regression,RMSE,8145.629401059716,1864.7475964179052,6,"Large regression datasets use a deterministic 10,000-row cap."

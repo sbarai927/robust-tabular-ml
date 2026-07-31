@@ -1,0 +1,181 @@
+dataset,model,task,seed,metric_name,test_score,train_score_if_available,status,notes
+drybean,rf,classification,0,F1,0.7533651134127531,0.94894223765169,success,fit_elapsed_sec=0.394
+drybean,rf,classification,42,F1,0.775602822807197,0.9499477193470552,success,fit_elapsed_sec=0.369
+drybean,rf,classification,123,F1,0.7434397315667212,0.9471753997400524,success,fit_elapsed_sec=0.463
+drybean,xgboost,classification,0,F1,0.8107724960305888,0.9743454273282384,success,fit_elapsed_sec=0.344
+drybean,xgboost,classification,42,F1,0.8208791431290368,0.9745965811761436,success,fit_elapsed_sec=0.336
+drybean,xgboost,classification,123,F1,0.7846655328798187,0.9756024966587796,success,fit_elapsed_sec=0.323
+drybean,lgbm,classification,0,F1,0.8037782531273696,0.9861662660716416,success,fit_elapsed_sec=2.471
+drybean,lgbm,classification,42,F1,0.8198668282465045,0.9864181674090672,success,fit_elapsed_sec=2.429
+drybean,lgbm,classification,123,F1,0.7796510833421904,0.9919515066127806,success,fit_elapsed_sec=2.710
+drybean,catboost,classification,0,F1,0.7987919419613939,0.9922030018088788,success,fit_elapsed_sec=0.754
+drybean,catboost,classification,42,F1,0.8178659682874558,0.992957701931546,success,fit_elapsed_sec=0.660
+drybean,catboost,classification,123,F1,0.7997742720780634,0.9934606305618104,success,fit_elapsed_sec=0.615
+drybean,mlp,classification,0,F1,0.6612463485881208,0.732642070004645,success,fit_elapsed_sec=1.361
+drybean,mlp,classification,42,F1,0.6801071257072255,0.7092885568785117,success,fit_elapsed_sec=1.187
+drybean,mlp,classification,123,F1,0.6315838376453844,0.6918686873438005,success,fit_elapsed_sec=0.775
+drybean,tabnet,classification,0,F1,0.6398798374706343,0.6580547142631639,success,fit_elapsed_sec=1.887
+drybean,tabnet,classification,42,F1,0.6762099986300466,0.6845235207116636,success,fit_elapsed_sec=2.183
+drybean,tabnet,classification,123,F1,0.6450655667056577,0.6755954686585868,success,fit_elapsed_sec=1.803
+drybean,tabpfn,classification,0,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+drybean,tabpfn,classification,42,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+drybean,tabpfn,classification,123,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+drybean,apt,classification,0,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+drybean,apt,classification,42,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+drybean,apt,classification,123,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+mnist,rf,classification,0,F1,0.963862852307965,1.0,success,fit_elapsed_sec=0.217
+mnist,rf,classification,42,F1,0.9689484859668324,1.0,success,fit_elapsed_sec=0.218
+mnist,rf,classification,123,F1,0.988801294478718,1.0,success,fit_elapsed_sec=0.220
+mnist,xgboost,classification,0,F1,0.9693774158021656,1.0,success,fit_elapsed_sec=0.982
+mnist,xgboost,classification,42,F1,0.9689849261593766,1.0,success,fit_elapsed_sec=0.954
+mnist,xgboost,classification,123,F1,0.9861333203685236,1.0,success,fit_elapsed_sec=0.968
+mnist,lgbm,classification,0,F1,0.9723185736527938,1.0,success,fit_elapsed_sec=2.033
+mnist,lgbm,classification,42,F1,0.9692457702433468,1.0,success,fit_elapsed_sec=1.985
+mnist,lgbm,classification,123,F1,0.9833247521659638,1.0,success,fit_elapsed_sec=1.995
+mnist,catboost,classification,0,F1,0.9834355825886336,1.0,success,fit_elapsed_sec=0.717
+mnist,catboost,classification,42,F1,0.9832465906550414,1.0,success,fit_elapsed_sec=0.718
+mnist,catboost,classification,123,F1,0.9944025479060586,1.0,success,fit_elapsed_sec=0.697
+mnist,mlp,classification,0,F1,0.9720533627574212,0.9986010446955356,success,fit_elapsed_sec=0.200
+mnist,mlp,classification,42,F1,0.9858964109664704,0.9979063498426748,success,fit_elapsed_sec=0.141
+mnist,mlp,classification,123,F1,0.9858149017083796,0.9971960892231224,success,fit_elapsed_sec=0.157
+mnist,tabnet,classification,0,F1,0.9156592227892708,0.9742564466785588,success,fit_elapsed_sec=1.111
+mnist,tabnet,classification,42,F1,0.9603339869876188,0.9860330432773368,success,fit_elapsed_sec=1.018
+mnist,tabnet,classification,123,F1,0.9547721208631136,0.9692895012627404,success,fit_elapsed_sec=0.980
+mnist,tabpfn,classification,0,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+mnist,tabpfn,classification,42,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+mnist,tabpfn,classification,123,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+mnist,apt,classification,0,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+mnist,apt,classification,42,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+mnist,apt,classification,123,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+telco,rf,classification,0,F1,0.0,0.0,success,fit_elapsed_sec=0.586
+telco,rf,classification,42,F1,0.0,0.0,success,fit_elapsed_sec=0.447
+telco,rf,classification,123,F1,0.0,0.0,success,fit_elapsed_sec=0.454
+telco,xgboost,classification,0,F1,0.593939393939394,0.6234727878563495,success,fit_elapsed_sec=3.821
+telco,xgboost,classification,42,F1,0.5918367346938775,0.6267110617832038,success,fit_elapsed_sec=4.186
+telco,xgboost,classification,123,F1,0.5833333333333334,0.6330615270570793,success,fit_elapsed_sec=3.809
+telco,lgbm,classification,0,F1,0.5718432510885341,0.7689015691868759,success,fit_elapsed_sec=0.617
+telco,lgbm,classification,42,F1,0.5441595441595442,0.7635714285714286,success,fit_elapsed_sec=0.627
+telco,lgbm,classification,123,F1,0.5590778097982709,0.7738053097345132,success,fit_elapsed_sec=0.605
+telco,catboost,classification,0,F1,0.5923664122137404,0.6292974588938715,success,fit_elapsed_sec=15.550
+telco,catboost,classification,42,F1,0.5961820851688693,0.6424015009380863,success,fit_elapsed_sec=16.106
+telco,catboost,classification,123,F1,0.5783132530120482,0.6382022471910113,success,fit_elapsed_sec=15.646
+telco,mlp,classification,0,F1,0.6262924667651403,0.9649359406608228,success,fit_elapsed_sec=13.502
+telco,mlp,classification,42,F1,0.6319702602230484,0.6531139077121653,success,fit_elapsed_sec=11.310
+telco,mlp,classification,123,F1,0.5585585585585585,0.9642616318273768,success,fit_elapsed_sec=13.087
+telco,tabnet,classification,0,F1,0.6167597765363129,0.6541899441340782,success,fit_elapsed_sec=81.386
+telco,tabnet,classification,42,F1,0.628428927680798,0.6795164978765109,success,fit_elapsed_sec=89.015
+telco,tabnet,classification,123,F1,0.6093552465233881,0.6241180243745991,success,fit_elapsed_sec=62.040
+telco,tabpfn,classification,0,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+telco,tabpfn,classification,42,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+telco,tabpfn,classification,123,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+telco,apt,classification,0,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+telco,apt,classification,42,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+telco,apt,classification,123,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+titanic,rf,classification,0,F1,0.819672131147541,0.9245283018867924,success,fit_elapsed_sec=0.271
+titanic,rf,classification,42,F1,0.8620689655172413,0.9289099526066352,success,fit_elapsed_sec=0.219
+titanic,rf,classification,123,F1,0.8275862068965517,0.937799043062201,success,fit_elapsed_sec=0.218
+titanic,xgboost,classification,0,F1,0.7843137254901961,0.9215686274509804,success,fit_elapsed_sec=0.257
+titanic,xgboost,classification,42,F1,0.8679245283018868,0.9458128078817734,success,fit_elapsed_sec=0.172
+titanic,xgboost,classification,123,F1,0.8,0.95,success,fit_elapsed_sec=0.168
+titanic,lgbm,classification,0,F1,0.76,0.9489795918367347,success,fit_elapsed_sec=0.148
+titanic,lgbm,classification,42,F1,0.84,0.9441624365482234,success,fit_elapsed_sec=0.113
+titanic,lgbm,classification,123,F1,0.7777777777777778,0.9387755102040816,success,fit_elapsed_sec=0.115
+titanic,catboost,classification,0,F1,0.8076923076923077,1.0,success,fit_elapsed_sec=0.264
+titanic,catboost,classification,42,F1,0.8461538461538461,1.0,success,fit_elapsed_sec=0.159
+titanic,catboost,classification,123,F1,0.8148148148148148,1.0,success,fit_elapsed_sec=0.159
+titanic,mlp,classification,0,F1,0.819672131147541,0.8083333333333333,success,fit_elapsed_sec=0.043
+titanic,mlp,classification,42,F1,0.8620689655172413,0.9074074074074074,success,fit_elapsed_sec=0.053
+titanic,mlp,classification,123,F1,0.8148148148148148,0.984924623115578,success,fit_elapsed_sec=0.086
+titanic,tabnet,classification,0,F1,0.4878048780487805,0.4794520547945205,success,fit_elapsed_sec=0.081
+titanic,tabnet,classification,42,F1,0.8064516129032258,0.7815126050420168,success,fit_elapsed_sec=0.079
+titanic,tabnet,classification,123,F1,0.0,0.0727272727272727,success,fit_elapsed_sec=0.074
+titanic,tabpfn,classification,0,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+titanic,tabpfn,classification,42,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+titanic,tabpfn,classification,123,F1,,,skipped,tabpfn is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+titanic,apt,classification,0,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+titanic,apt,classification,42,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+titanic,apt,classification,123,F1,,,skipped,apt is a pretrained/default baseline; repeated random initialization is not applicable. Pass --include-pretrained to rerun context-based fits across split seeds.
+diamonds_v2,rf,regression,0,R2,0.8129391464640574,0.9180700302785526,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.542
+diamonds_v2,rf,regression,0,RMSE,10419.6747653967,6263.398863215701,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.542
+diamonds_v2,rf,regression,42,R2,0.7557997108273449,0.9433605204281937,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.711
+diamonds_v2,rf,regression,42,RMSE,7584.169249186235,5399.840646465387,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.711
+diamonds_v2,rf,regression,123,R2,0.750461336454862,0.9128959327629376,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.502
+diamonds_v2,rf,regression,123,RMSE,8958.781086731296,7611.85740291332,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.502
+diamonds_v2,xgboost,regression,0,R2,0.7940176725387573,0.9999864101409912,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.623
+diamonds_v2,xgboost,regression,0,RMSE,10933.96555109436,80.75066853111323,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.623
+diamonds_v2,xgboost,regression,42,R2,0.8385674953460693,0.9999905824661255,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.637
+diamonds_v2,xgboost,regression,42,RMSE,6166.382629853364,69.68028467290601,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.637
+diamonds_v2,xgboost,regression,123,R2,0.6613584756851196,0.9999894499778748,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.595
+diamonds_v2,xgboost,regression,123,RMSE,10436.38528991711,83.84269936515346,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.595
+diamonds_v2,lgbm,regression,0,R2,0.8166931461448472,0.9001177429124428,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.620
+diamonds_v2,lgbm,regression,0,RMSE,10314.592128601142,6915.647456367199,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.620
+diamonds_v2,lgbm,regression,42,R2,0.7817764562634728,0.9106446541525616,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.547
+diamonds_v2,lgbm,regression,42,RMSE,7169.44819992439,6782.3716918346545,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.547
+diamonds_v2,lgbm,regression,123,R2,0.5673616979577141,0.8564261917864925,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.569
+diamonds_v2,lgbm,regression,123,RMSE,11796.20971217488,9772.575550177371,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.569
+diamonds_v2,catboost,regression,0,R2,0.8014609978324869,0.9977683505095679,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.773
+diamonds_v2,catboost,regression,0,RMSE,10734.594038689162,1033.7170129843455,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.773
+diamonds_v2,catboost,regression,42,R2,0.8493091156385206,0.998208133583621,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.689
+diamonds_v2,catboost,regression,42,RMSE,5957.697113018861,960.4486080644431,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.689
+diamonds_v2,catboost,regression,123,R2,0.7732505580256327,0.9984184816824745,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.668
+diamonds_v2,catboost,regression,123,RMSE,8539.90649491713,1025.672094461344,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.668
+diamonds_v2,mlp,regression,0,R2,0.9114069058093425,0.9658195880632601,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=7.758
+diamonds_v2,mlp,regression,0,RMSE,7170.717983788745,4045.547625535094,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=7.758
+diamonds_v2,mlp,regression,42,R2,0.7965237746417365,0.9763681935488268,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.576
+diamonds_v2,mlp,regression,42,RMSE,6922.959094717143,3487.9461962629302,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.576
+diamonds_v2,mlp,regression,123,R2,0.6976574903915713,0.876552662069664,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=3.781
+diamonds_v2,mlp,regression,123,RMSE,9861.19640900703,9061.754478848074,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=3.781
+diamonds_v2,tabnet,regression,0,R2,-0.05955147743225098,-0.06715047359466553,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.050
+diamonds_v2,tabnet,regression,0,RMSE,24798.403324728166,22604.842382765455,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.050
+diamonds_v2,tabnet,regression,42,R2,-0.11547768115997314,-0.05970561504364014,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=3.877
+diamonds_v2,tabnet,regression,42,RMSE,16209.341793895226,23356.8303445871,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=3.877
+diamonds_v2,tabnet,regression,123,R2,-0.09302091598510742,-0.05278348922729492,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=3.549
+diamonds_v2,tabnet,regression,123,RMSE,18749.696343896263,26463.115068892195,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=3.549
+diamonds_v2,tabpfn,regression,0,R2,,,skipped,best_params.json not found
+diamonds_v2,tabpfn,regression,42,R2,,,skipped,best_params.json not found
+diamonds_v2,tabpfn,regression,123,R2,,,skipped,best_params.json not found
+diamonds_v2,apt,regression,0,R2,,,skipped,best_params.json not found
+diamonds_v2,apt,regression,42,R2,,,skipped,best_params.json not found
+diamonds_v2,apt,regression,123,R2,,,skipped,best_params.json not found
+diamonds_v3,rf,regression,0,R2,0.8003781756109462,0.9174804344208817,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.372
+diamonds_v3,rf,regression,0,RMSE,10763.82721502383,6285.895234459084,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.372
+diamonds_v3,rf,regression,42,R2,0.7665587408497558,0.9425863578415601,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.374
+diamonds_v3,rf,regression,42,RMSE,7415.214831474804,5436.618587370649,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.374
+diamonds_v3,rf,regression,123,R2,0.7676221665228917,0.9116453752348092,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.376
+diamonds_v3,rf,regression,123,RMSE,8645.245912972317,7666.304586250931,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=1.376
+diamonds_v3,xgboost,regression,0,R2,0.7992715835571289,0.9999876022338867,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.495
+diamonds_v3,xgboost,regression,0,RMSE,10793.621207735461,77.12294191263626,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.495
+diamonds_v3,xgboost,regression,42,R2,0.8015871047973633,0.9999938011169434,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.476
+diamonds_v3,xgboost,regression,42,RMSE,6836.280183295599,56.390053672236455,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.476
+diamonds_v3,xgboost,regression,123,R2,0.7477160096168518,0.9999938011169434,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.463
+diamonds_v3,xgboost,regression,123,RMSE,9007.926692986148,64.27308407580932,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.463
+diamonds_v3,lgbm,regression,0,R2,0.7642931582349883,0.9647054511956663,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.614
+diamonds_v3,lgbm,regression,0,RMSE,11696.308156513145,4110.952787731433,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.614
+diamonds_v3,lgbm,regression,42,R2,0.7949600574034856,0.9717372885752058,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.611
+diamonds_v3,lgbm,regression,42,RMSE,6949.5096938663055,3814.4175212605833,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.611
+diamonds_v3,lgbm,regression,123,R2,0.5743669880647994,0.9075328056688607,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.563
+diamonds_v3,lgbm,regression,123,RMSE,11700.31769654953,7842.69393466934,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.563
+diamonds_v3,catboost,regression,0,R2,0.844046905938703,0.9972478879542354,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.892
+diamonds_v3,catboost,regression,0,RMSE,9513.92460011333,1147.9467096371036,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.892
+diamonds_v3,catboost,regression,42,R2,0.8373466451201702,0.9977025264166488,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.843
+diamonds_v3,catboost,regression,42,RMSE,6189.654986693355,1087.5433565924106,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.843
+diamonds_v3,catboost,regression,123,R2,0.8040875235012336,0.9983122840533875,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.842
+diamonds_v3,catboost,regression,123,RMSE,7937.99917292646,1059.5491405733212,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=0.842
+diamonds_v3,mlp,regression,0,R2,0.8802510134061494,0.958104430081139,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=5.674
+diamonds_v3,mlp,regression,0,RMSE,8336.78556440277,4478.913996787435,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=5.674
+diamonds_v3,mlp,regression,42,R2,0.7891722580451002,0.9473233923900857,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=6.868
+diamonds_v3,mlp,regression,42,RMSE,7046.911346875704,5207.511237219148,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=6.868
+diamonds_v3,mlp,regression,123,R2,0.6801435073856932,0.8283807346616585,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=2.621
+diamonds_v3,mlp,regression,123,RMSE,10142.793587756005,10684.505965127717,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=2.621
+diamonds_v3,tabnet,regression,0,R2,0.09563237428665161,0.09015250205993652,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.660
+diamonds_v3,tabnet,regression,0,RMSE,22910.534722916,20872.42935002389,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.660
+diamonds_v3,tabnet,regression,42,R2,0.14682674407958984,0.1441320776939392,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.655
+diamonds_v3,tabnet,regression,42,RMSE,14175.994288617492,20990.592874013608,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.655
+diamonds_v3,tabnet,regression,123,R2,0.15306973457336426,0.15631037950515747,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.386
+diamonds_v3,tabnet,regression,123,RMSE,16504.554184291734,23689.87492819138,success,deterministic row cap used for lightweight analysis: 10000/75363 rows; fit_elapsed_sec=4.386
+diamonds_v3,tabpfn,regression,0,R2,,,skipped,best_params.json not found
+diamonds_v3,tabpfn,regression,42,R2,,,skipped,best_params.json not found
+diamonds_v3,tabpfn,regression,123,R2,,,skipped,best_params.json not found
+diamonds_v3,apt,regression,0,R2,,,skipped,best_params.json not found
+diamonds_v3,apt,regression,42,R2,,,skipped,best_params.json not found
+diamonds_v3,apt,regression,123,R2,,,skipped,best_params.json not found

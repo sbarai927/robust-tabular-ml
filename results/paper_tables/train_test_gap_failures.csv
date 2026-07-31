@@ -1,0 +1,24 @@
+dataset,model,status,error
+diamonds_v2,rf,failed,re-scored R2=-22.983419 differs from saved HPO R2=0.999967; artifact/current-data schema mismatch
+diamonds_v2,xgboost,failed,re-scored R2=0.501507 differs from saved HPO R2=0.999966; artifact/current-data schema mismatch
+diamonds_v2,lgbm,failed,re-scored R2=0.542615 differs from saved HPO R2=0.986463; artifact/current-data schema mismatch
+diamonds_v2,catboost,failed,re-scored R2=0.624160 differs from saved HPO R2=0.995239; artifact/current-data schema mismatch
+diamonds_v2,tabnet,failed,re-scored R2=0.951655 differs from saved HPO R2=0.987541; artifact/current-data schema mismatch
+diamonds_v2,tabpfn,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+diamonds_v2,apt,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+diamonds_v3,rf,failed,re-scored R2=-23.107760 differs from saved HPO R2=0.999981; artifact/current-data schema mismatch
+diamonds_v3,xgboost,failed,re-scored R2=0.367492 differs from saved HPO R2=0.999981; artifact/current-data schema mismatch
+diamonds_v3,lgbm,failed,re-scored R2=0.543736 differs from saved HPO R2=0.995165; artifact/current-data schema mismatch
+diamonds_v3,catboost,failed,re-scored R2=0.612953 differs from saved HPO R2=0.994999; artifact/current-data schema mismatch
+diamonds_v3,tabnet,failed,regression train-test gap=-0.721155 is implausibly negative for a saved post-HPO model; artifact/current-data schema mismatch
+diamonds_v3,tabpfn,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+diamonds_v3,apt,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+drybean,tabpfn,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+drybean,apt,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+mnist,tabpfn,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+mnist,apt,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+telco,tabpfn,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+telco,apt,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+titanic,xgboost,failed,re-scored F1=0.916667 differs from saved HPO F1=0.960000; artifact/current-data schema mismatch
+titanic,tabpfn,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
+titanic,apt,failed,train-side gap diagnostic skipped: pretrained inference over stored context is too slow for full/capped train scoring in this environment
