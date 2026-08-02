@@ -16,8 +16,8 @@ The central question is not only which model obtains the best clean-data score, 
 
 ## Manuscripts
 
-- [Original manuscript](docs/main_original.pdf)
-- [Revised manuscript](docs/main_revised.pdf)
+- [Original manuscript for Research Project module paper submission](docs/main_original.pdf)
+- [Revised manuscript after initial evaluation by authority on the project](docs/main_revised.pdf)
 - [Final reviewer-addressed revision](docs/main_revised_final.pdf)
 
 ---
@@ -37,8 +37,6 @@ The central question is not only which model obtains the best clean-data score, 
 11. [Result organization](#result-organization)
 12. [Repository map](#repository-map)
 13. [Reproducibility notes and limitations](#reproducibility-notes-and-limitations)
-14. [Citation](#citation)
-15. [Contact](#contact)
 
 ---
 
@@ -491,33 +489,3 @@ results/paper_figure_delta_summary/   # source CSVs behind figures and rank test
 
 ---
 
-## Citation
-
-A formal proceedings citation/DOI should replace this provisional entry when available.
-
-```bibtex
-@misc{barai2026tree_model_dominance,
-  author       = {Suvendu Barai},
-  title        = {Understanding Tree Model Dominance in Tabular Learning: Performance, Robustness, and Stability Across Classical, Deep and Foundation (Pre-trained) Models},
-  year         = {2026},
-  howpublished = {Manuscript and reproducibility repository},
-  url          = {https://github.com/sbarai927/robust-tabular-ml}
-}
-```
-
-Please also cite the original model, dataset, Optuna, and SHAP publications used by the study. Full references are provided in the manuscript PDFs.
-
----
-
-## Contact
-
-**Suvendu Barai**  
-Communication Systems and Networks  
-Technische Hochschule Köln  
-Email: `suvendu.barai@smail.th-koeln.de`
-
----
-
-## License
-
-No top-level project license is currently declared. Dataset files and the vendored APT implementation remain subject to their respective original licences. Contact the author before redistributing or reusing repository content beyond normal academic inspection and citation.
